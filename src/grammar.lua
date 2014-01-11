@@ -12,29 +12,48 @@
 -- License under the BSD 2-Clause License. See COPYING for full license details.
 
 
-local lpeg = require("lpeg")
-local P, R, S, V, C, Cg, Ct
-      = lpeg.P, lpeg.R, lpeg.S, lpeg.V, lpeg.C, lpeg.Cg, lpeg.Ct
+local lp = require("lpeg")
+local P, R, S, V, C, Cg, Ct, locale
+      = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
 local grammar = {}
-local G = {"Program"}
 
-function grammar.geninterp(parser)
-  setmetatable(G, {__index = lpeg})
+local function gengrammar(parser)
+  local G = {"Program"}
 
-  local interp = {}
+  -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
+  -- print, punct, space, upper, and xdigit
+  G = locale(G)
+  G.Symbol = P(V"alpha" * V"alnum"^0)
+  G.Number = P(V"digit"^1)
+  G.Open = P"("
+  G.Close = P")"
 
-  function interp.parsestr(string)
-    lpeg.match(G, string)
+  G.Car = V"Symbol"
+  G.Cdr = P(V"List"^0 + V"Symbol" + V"Number")
+  G.List = Ct(V"Open" * P" "^1 * Cg(V"Car", "car") * P" "^1
+              * Cg(V"Cdr", "cdr") * V"Close") / parser.onlist
+
+  G.Program = P(V"List"^1)
+
+  return P(G)
+end
+
+function grammar.genreader(parser)
+  local reader = {}
+  reader.grammar = gengrammar(parser)
+
+  function reader.readstr(string)
+    reader.grammar:match(string)
   end
 
-  function interp.parsefile(srcfile)
+  function reader.readfile(srcfile)
     -- TODO: We can be smarter about not reading the entire file at once here...
     local source = io.open(srcfile, "r")
-    lpeg.match(G, source:read("*a"))
+    reader.grammar:match(source:read("*a"))
   end
 
-  return interp
+  return reader
 end
 
 return grammar

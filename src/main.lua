@@ -1,10 +1,10 @@
 function main(opts)
   local grammar = require("grammar")
-  local interp
+  local reader
 
   if opts.debug then
     local debugparser = require("parser.debug")
-    interp = grammar.geninterp(debugparser)
+    reader = grammar.genreader(debugparser)
   else
     print("Only debugging works at the moment...")
     os.exit(1)
@@ -12,10 +12,10 @@ function main(opts)
 
   if opts.evallist then
     for _,v in ipairs(opts.evallist) do
-      interp.parsestr(v)
+      reader.readstr(v)
     end
   elseif opts.srcfile then
-    interp.parsefile(opts.srcfile)
+    reader.readfile(opts.srcfile)
   else
     print("No source provided!")
   end

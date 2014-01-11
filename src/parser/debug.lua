@@ -1,7 +1,8 @@
 local parser = {}
 
-function parser.pushlist(l)
-  print("Got a list...")
+function parser.onlist(l)
+  print("List contents:")
+  for k,v in pairs(l) do print(k,v) end
 end
 
 return parser
