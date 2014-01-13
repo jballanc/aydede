@@ -48,12 +48,12 @@ main(int argc, char *argv[]) {
   lua_newtable(L);
 
   // Parse CLI arguments, pushing appropriate values into the table to be passed
-  while((opt = getopt_long(argc, argv, "e:v", cliopts, NULL)) != -1) {
+  while((opt = getopt_long(argc, argv, "e:d", cliopts, NULL)) != -1) {
     switch (opt) {
       case 'e':
         ay_pusheval(L, optarg);
         break;
-      case 'v':
+      case 'd':
         debug = 1;
         break;
       case 0:
