@@ -30,9 +30,9 @@ local function gengrammar(parser)
   G.Close = P")"
 
   G.Car = V"Symbol"
-  G.Cdr = P(V"List"^0 + V"Symbol" + V"Number")
-  G.List = Ct(V"Open" * P" "^1 * Cg(V"Car", "car") * P" "^1
-              * Cg(V"Cdr", "cdr") * V"Close") / parser.onlist
+  G.Cdr = P(V"List"^1 + V"Symbol" + V"Number")
+  G.List = Ct(V"Open" * P" "^0 * Cg(V"Car", "car") * P" "^0
+              * Cg(V"Cdr", "cdr") * P" "^0 * V"Close") / parser.onlist
 
   G.Program = P(V"List"^1)
 
