@@ -1,3 +1,17 @@
+# Makefile
+#
+# This is the main Makefile for aydede.
+#
+# The default target of this Makefile is the `ay` binary, which is a completely
+# self-contained, portable binary composed of elements of the LuaJIT runtime,
+# the LPeg parsing grammar library, and the Aydede implementation of Scheme.
+#
+# Copyright (c) 2014, Joshua Ballanco.
+#
+# Licensed under the BSD 2-Clause License. See COPYING for full license details.
+#
+
+
 LJDESTDIR = $(CURDIR)/build
 LJPREFIX = $(LJDESTDIR)/usr/local
 LJSTATIC = $(LJPREFIX)/lib/libluajit-5.1.a

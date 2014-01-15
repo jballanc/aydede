@@ -1,3 +1,19 @@
+/* main.c
+ *
+ * The main entry point for the "ay" binary.
+ *
+ * This is a small C wrapper that handles bootstrapping the Lua/LuaJIT runtime, loading
+ * the "main.lua" module, and parsing of command-line arguments using `getopt_long`.
+ * Arguments are collected in a Lua table that is passed directly to the `main` function
+ * in the "main.lua" module for further execution.
+ *
+ * Copyright (c) 2014, Joshua Ballanco.
+ *
+ * Licensed under the BSD 2-Clause License. See COPYING for full license details.
+ *
+ */
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
