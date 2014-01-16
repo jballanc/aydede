@@ -17,9 +17,35 @@
 
 local parser = {}
 
+-- The goal here is that parsing a form like:
+--
+--     (foo (bar "string") (baz 2.0))
+--
+-- should produce the following output:
+--
+--     [:list
+--       [:symbol foo],
+--       [:list
+--         [:symbol bar],
+--         [:string string]],
+--       [:list
+--         [:symbol baz],
+--         [:float 2.0]]]
+--
 function parser.onlist(l)
-  print("List contents:")
-  for k,v in pairs(l) do print(k,v) end
+  print("[:list")
+  print("\t[:car "..l.car.."],")
+  if type(l.cdr) == "table" then
+    print("\t[:cdr ")
+    for k,v in pairs(l.cdr) do
+      print("\t\t[:"..k.." "..v.."],")
+    end
+    print("\t]]")
+  else
+    print("\t[:cdr "..l.cdr.."]]")
+  end
+
+  return l
 end
 
 return parser
