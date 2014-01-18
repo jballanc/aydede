@@ -18,9 +18,7 @@ local lp = require("lpeg")
 local P, R, S, V, C, Cg, Ct, locale
       = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
-local grammar = {}
-
-local function gengrammar(parser)
+local function grammar(parser)
   local G = {"Program"}
 
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
@@ -39,23 +37,6 @@ local function gengrammar(parser)
   G.Program = P(V"List"^1)
 
   return P(G)
-end
-
-function grammar.genreader(parser)
-  local reader = {}
-  reader.grammar = gengrammar(parser)
-
-  function reader.readstr(string)
-    reader.grammar:match(string)
-  end
-
-  function reader.readfile(srcfile)
-    -- TODO: We can be smarter about not reading the entire file at once here...
-    local source = io.open(srcfile, "r")
-    reader.grammar:match(source:read("*a"))
-  end
-
-  return reader
 end
 
 return grammar
