@@ -18,10 +18,12 @@
 function main(opts)
   local reader = require("reader")
   local grammar = require("grammar")
-  local parser
+  local parser = require("parser")
+  local evaluator
+  local program
 
   if opts.debug then
-    parser = require("parser.debug")
+    evaluator = require("eval.debug")
   else
     print("Only debugging works at the moment...")
     os.exit(1)
@@ -30,11 +32,13 @@ function main(opts)
   local r = reader:new(grammar, parser)
   if opts.evallist then
     for _,v in ipairs(opts.evallist) do
-      r:read_str(v)
+      program = r:read_str(v)
     end
   elseif opts.srcfile then
-    r:read_file(opts.srcfile)
+    program = r:read_file(opts.srcfile)
   else
     print("No source provided!")
   end
+
+  evaluator.eval(program)
 end

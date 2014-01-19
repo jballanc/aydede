@@ -1,6 +1,6 @@
---[[ parser/debug.lua
+--[[ parser.lua
 
-  A debug parser for use with the aydede grammar.
+  The parser for use with the aydede grammar.
 
   This is a basic parser that turns events fired during the processing of an input stream
   using the aydede grammar (see: grammar.lua) into a string describing the resulting AST.
@@ -17,22 +17,7 @@
 
 local parser = {}
 
--- The goal here is that parsing a form like:
---
---     (foo (bar "string") (baz 2.0))
---
--- should produce the following output:
---
---     [:list
---       [:symbol foo],
---       [:list
---         [:symbol bar],
---         [:string string]],
---       [:list
---         [:symbol baz],
---         [:float 2.0]]]
---
-function parser.onlist(l)
+function parser.list(l)
   print("[:list")
   print("\t[:car "..l.car.."],")
   if type(l.cdr) == "table" then

@@ -18,7 +18,7 @@ local lp = require("lpeg")
 local P, R, S, V, C, Cg, Ct, locale
       = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
-local function grammar(parser)
+local function grammar(parse)
   local G = {"Program"}
 
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
@@ -32,7 +32,7 @@ local function grammar(parser)
   G.Car = V"Symbol"
   G.Cdr = P(V"List"^1 + V"Symbol" + V"Number")
   G.List = Ct(V"Open" * P" "^0 * Cg(V"Car", "car") * P" "^0
-              * Cg(V"Cdr", "cdr") * P" "^0 * V"Close") / parser.onlist
+              * Cg(V"Cdr", "cdr") * P" "^0 * V"Close") / parse.list
 
   G.Program = P(V"List"^1)
 
