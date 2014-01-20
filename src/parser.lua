@@ -15,22 +15,13 @@
 --]]
 
 
+local ast = require("ast")
+
 local parser = {}
 
 function parser.list(l)
-  print("[:list")
-  print("\t[:car "..l.car.."],")
-  if type(l.cdr) == "table" then
-    print("\t[:cdr ")
-    for k,v in pairs(l.cdr) do
-      print("\t\t[:"..k.." "..v.."],")
-    end
-    print("\t]]")
-  else
-    print("\t[:cdr "..l.cdr.."]]")
-  end
-
-  return l
+  print("Parsing list...")
+  return ast.list:new(l.car, l.cdr)
 end
 
 return parser

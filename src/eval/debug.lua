@@ -28,6 +28,28 @@
 
 local debug = {}
 
+local function print_val(v)
+  print("Printing val: "..tostring(v))
+  if type(v) == "table" then
+    print_table(v)
+  else
+    print(tostring(v))
+  end
+end
+
+local function print_table(t)
+  print("Printing table: "..tostring(t))
+  for k,v in pairs(t) do
+    print(tostring(k))
+    if type(v) == "table" then
+      print_table(v)
+    else
+      print_val(v)
+    end
+  end
+end
+
 function debug.eval(prog)
-  print(prog)
+  print("Printing program: "..tostring(prog))
+  print_val(prog)
 end
