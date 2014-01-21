@@ -14,7 +14,7 @@
          { symbol = foo },
          { list = {
            { symbol = bar },
-           { string = string } } }
+           { string = string } } },
          { list = {
            { symbol = baz },
            { float = 2.0 } } } }
@@ -28,28 +28,31 @@
 
 local debug = {}
 
-local function print_val(v)
-  print("Printing val: "..tostring(v))
-  if type(v) == "table" then
-    print_table(v)
-  else
-    print(tostring(v))
-  end
+local print_indent, print_node
+
+local indent = 0
+
+function print_indent(str)
+  print(string.rep("\t", indent)..str)
 end
 
-local function print_table(t)
-  print("Printing table: "..tostring(t))
-  for k,v in pairs(t) do
-    print(tostring(k))
-    if type(v) == "table" then
-      print_table(v)
-    else
-      print_val(v)
-    end
+function print_node(node)
+  if type(node) == "table" and node.type == "list" then
+    print_indent("list = {")
+    indent = indent + 1
+    print_node(node.car)
+    print_node(node.cdr)
+    indent = indent - 1
+    print_indent("}")
+  else
+    print_indent(tostring(node))
   end
 end
 
 function debug.eval(prog)
-  print("Printing program: "..tostring(prog))
-  print_val(prog)
+  for _,node in ipairs(prog) do
+    print_node(node)
+  end
 end
+
+return debug

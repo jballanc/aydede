@@ -14,11 +14,10 @@
 
 local list = {}
 
-function list:new(car, cdr)
-  print("Generating new list...")
+function list.new(car, cdr)
+  local self = { type = "list" }
   self.car = car
   self.cdr = cdr
-  print("Returning list: "..tostring(self))
   return self
 end
 

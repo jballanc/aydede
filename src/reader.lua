@@ -27,7 +27,7 @@ end
 function reader:read_file(src)
   -- TODO: We can be smarter about not reading the entire file at once here...
   local source = io.open(src, "r")
-  self.grammar:match(source:read("*a"))
+  return self.grammar:match(source:read("*a"))
 end
 
 return reader

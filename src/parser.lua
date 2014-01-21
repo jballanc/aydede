@@ -16,12 +16,12 @@
 
 
 local ast = require("ast")
+local list = ast.list
 
 local parser = {}
 
 function parser.list(l)
-  print("Parsing list...")
-  return ast.list:new(l.car, l.cdr)
+  return list.new(l.car, l.cdr)
 end
 
 return parser

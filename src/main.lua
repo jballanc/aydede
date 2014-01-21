@@ -40,6 +40,5 @@ function main(opts)
     print("No source provided!")
   end
 
-  print("Evaluating program: "..tostring(program))
   evaluator.eval(program)
 end

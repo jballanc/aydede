@@ -34,7 +34,7 @@ local function grammar(parse)
   G.List = Ct(V"Open" * P" "^0 * Cg(V"Car", "car") * P" "^0
               * Cg(V"Cdr", "cdr") * P" "^0 * V"Close") / parse.list
 
-  G.Program = P(V"List"^1)
+  G.Program = Ct(V"List"^1)
 
   return P(G)
 end
