@@ -43,6 +43,11 @@ build/luadeps.mk: | build
 
 include build/luadeps.mk
 
+build/%.lua: build/luadeps.mk
+	rm -f $(CURDIR)/build/luadeps.mk
+	$(MAKE) build/luadeps.mk
+	$(MAKE) $@
+
 %.o: %.lua $(LJBIN) | build
 	LUA_PATH=";;$(LJPREFIX)/share/luajit-2.0.2/?.lua" $(LJBIN) -b $< $@
 
