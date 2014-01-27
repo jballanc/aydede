@@ -63,6 +63,11 @@ build bin:
 
 .PHONY: clean test
 
+test:
+	@ $(foreach t,$(TESTS),\
+	  LUA_PATH=";;./src/?.lua;./test/?.lua;./vendor/luaunit/?.lua" \
+	  $(LJBIN) $(t))
+
 clean:
 	$(MAKE) clean -C vendor/lpeg
 	$(MAKE) clean -C vendor/LuaJIT
