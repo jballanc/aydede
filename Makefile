@@ -29,6 +29,7 @@ rwildcard = $(wildcard $1$2) \
 MAIN = src/main.c
 LUA_SRC = $(call rwildcard,src/,*.lua)
 LUA_OBJS = $(call slashtodots,.o,$(LUA_SRC))
+TESTS = $(call rwildcard,test/,*.lua)
 LPEG_OBJS = lpvm.o lpcap.o lptree.o lpcode.o lpprint.o
 LPEG = build/lpeg.o
 
