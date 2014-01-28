@@ -23,6 +23,7 @@ Aydede Copyright (c) 2014, Joshua Ballanco.
 
 Licensed under the BSD 2-Clause License. See COPYING for full license details.
 
+---
 
 LuaJIT Copyright (C) 2005-2013 Mike Pall. All rights reserved.
 
@@ -31,3 +32,7 @@ LuaJIT Copyright (C) 2005-2013 Mike Pall. All rights reserved.
 LPeg Copyright © 2013 Lua.org, PUC-Rio.
 
 (For full documentation and license terms, see: http://www.inf.puc-rio.br/~roberto/lpeg/)
+
+Luaunit Copyright (c) 2005,2007,2012, Philippe Fremy <phil at freehackers dot org>
+
+(See vendor/luaunit/LICENSE.txt for full details)
