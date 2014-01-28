@@ -1,15 +1,15 @@
 --[[ grammar.lua
 
- A simple LPeg grammar for scheme.
+  A simple LPeg grammar for scheme.
 
- In order to be as flexible as possible, this grammar only parses tokens from
- input. All interpretation and evaluation tasks are handled by the interpreter
- which is provided as an argument to the main function returned by this
- module.
+  In order to be as flexible as possible, this grammar only parses tokens from
+  input. All interpretation and evaluation tasks are handled by the interpreter
+  which is provided as an argument to the main function returned by this
+  module.
 
- Copyright (c) 2014, Joshua Ballanco.
+  Copyright (c) 2014, Joshua Ballanco.
 
- Licensed under the BSD 2-Clause License. See COPYING for full license details.
+  Licensed under the BSD 2-Clause License. See COPYING for full license details.
 
 --]]
 
