@@ -36,7 +36,7 @@ local function grammar(parse)
 
   G.Program = Ct(V"List"^1)
 
-  return G
+  return P(G)
 end
 
 return grammar

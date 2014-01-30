@@ -12,12 +12,10 @@
 
 --]]
 
-local lp = require("lpeg")
-
 local reader = {}
 
 function reader:new(grammar, parser)
-  self.grammar = lp.P(grammar(parser))
+  self.grammar = grammar(parser)
   return self
 end
 
