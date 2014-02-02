@@ -24,7 +24,7 @@ local function grammar(parse)
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
   G = locale(G)
-  G.Symbol = P(V"alpha" * V"alnum"^0)
+  G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
   G.Number = P(V"digit"^1)
   G.Open = P"("
   G.Close = P")"

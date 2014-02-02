@@ -20,6 +20,11 @@ local list = ast.list
 
 local parser = {}
 
+function parser.symbol(s)
+  return { type = "symbol",
+           value = s }
+end
+
 function parser.list(l)
   return list.new(l.car, l.cdr)
 end
