@@ -24,15 +24,18 @@ local function grammar(parse)
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
   G = locale(G)
+  G.open = P"("
+  G.close = P")"
+  G.quote = P"\""
+
+  G.String = C(V"quote" * -V"quote"^0 * V"quote") / parse.string
   G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
   G.Number = P(V"digit"^1)
-  G.Open = P"("
-  G.Close = P")"
 
   G.Car = V"Symbol"
   G.Cdr = P(V"List"^1 + V"Symbol" + V"Number")
-  G.List = Ct(V"Open" * P" "^0 * Cg(V"Car", "car") * P" "^0
-              * Cg(V"Cdr", "cdr") * P" "^0 * V"Close") / parse.list
+  G.List = Ct(V"open" * P" "^0 * Cg(V"Car", "car") * P" "^0
+              * Cg(V"Cdr", "cdr") * P" "^0 * V"close") / parse.list
 
   G.Program = Ct(V"List"^1)
 

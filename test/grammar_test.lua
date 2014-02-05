@@ -26,6 +26,16 @@ setmetatable(pmock, { __index = failed_call })
 
 TestGrammar = {}
 
+function TestGrammar:test_string()
+  function pmock.string(str)
+    assert_is(str, "\"Hello, world\"")
+  end
+
+  local g = grammar(pmock)
+  g[1] = "String"
+  P(g):match("\"Hello, world\"")
+end
+
 function TestGrammar:test_symbol()
   function pmock.symbol(str)
     assert_is(str, "foo")
