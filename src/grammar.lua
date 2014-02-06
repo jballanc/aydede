@@ -27,8 +27,10 @@ local function grammar(parse)
   G.open = P"("
   G.close = P")"
   G.quote = P"\""
+  G.backslash = P"\\"
+  G.escaped_quote = P(V"backslash" * V"quote")
 
-  G.String = C(V"quote" * -V"quote"^0 * V"quote") / parse.string
+  G.String = C(V"quote" * P(-V"quote"^0 + V"escaped_quote") * V"quote") / parse.string
   G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
   G.Number = P(V"digit"^1)
 
