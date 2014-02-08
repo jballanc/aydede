@@ -17,8 +17,12 @@ LJPREFIX = $(LJDESTDIR)/usr/local
 LJSTATIC = $(LJPREFIX)/lib/libluajit-5.1.a
 LJBIN = $(LJPREFIX)/bin/luajit
 
-CC = clang
-CFLAGS = -pagezero_size 10000 -image_base 100000000 -Ibuild/usr/local/include
+ifeq ($(strip $(shell uname)), Darwin)
+  CC = clang
+  CFLAGS = -pagezero_size 10000 -image_base 100000000 -Ibuild/usr/local/include
+else
+  CFLAGS = -Ibuild/usr/local/include
+endif
 
 slashtodots = $(addprefix build/,\
 	      $(addsuffix $1,\
