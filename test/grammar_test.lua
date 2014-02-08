@@ -70,4 +70,5 @@ function TestGrammar:test_decimal()
   P(g):match("2.0")
 end
 
+LuaUnit:setOutputType("TAP")
 LuaUnit:run()
