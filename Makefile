@@ -53,7 +53,7 @@ build/%.lua: build/luadeps.mk
 	LUA_PATH=";;$(LJPREFIX)/share/luajit-2.0.2/?.lua" $(LJBIN) -b $< $@
 
 build/lpeg.o: $(LJBIN) | build
-	$(MAKE) -C vendor/LPeg $(LPEG_OBJS)
+	LUADIR=$(LJPREFIX)/include/luajit-2.0/ $(MAKE) -C vendor/LPeg $(LPEG_OBJS)
 	ld -r vendor/lpeg/*.o -o ./build/lpeg.o
 
 $(LJBIN) $(LJSTATIC): | build
