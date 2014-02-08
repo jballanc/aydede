@@ -59,4 +59,15 @@ function TestGrammar:test_symbol()
   P(g):match("foo")
 end
 
+function TestGrammar:test_decimal()
+  p = mock({ number = function(str)
+                        assert_is(str, "2.0")
+                      end })
+
+  local g = grammar(p)
+  g[1] = "Number"
+
+  P(g):match("2.0")
+end
+
 LuaUnit:run()
