@@ -30,10 +30,11 @@ local function grammar(parse)
   G.backslash = P"\\"
   G.escaped_quote = P(V"backslash" * V"quote")
   G.dot = P"."
+  G.minus = P"-"
 
   G.String = C(V"quote" * P(-V"quote"^0 + V"escaped_quote") * V"quote") / parse.string
   G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
-  G.Number = P(V"digit"^1) * P(V"dot" * V"digit"^0)^-1 / parse.number
+  G.Number = V"minus"^-1 * P(V"digit"^1) * P(V"dot" * V"digit"^0)^-1 / parse.number
 
   G.Car = V"Symbol"
   G.Cdr = P(V"List"^1 + V"Symbol" + V"Number")

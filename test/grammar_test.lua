@@ -70,5 +70,16 @@ function TestGrammar:test_decimal()
   P(g):match("2.0")
 end
 
+function TestGrammar:test_negative()
+  p = mock({ number = function(str)
+                        assert_is(str, "-3.2")
+                      end })
+
+  local g = grammar(p)
+  g[1] = "Number"
+
+  P(g):match("-3.2")
+end
+
 LuaUnit:setOutputType("TAP")
 LuaUnit:run()
