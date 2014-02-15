@@ -20,8 +20,10 @@ LJBIN = $(LJPREFIX)/bin/luajit
 ifeq ($(strip $(shell uname)), Darwin)
   CC = clang
   CFLAGS = -pagezero_size 10000 -image_base 100000000 -Ibuild/usr/local/include
+  PLATFORM = macosx
 else
   CFLAGS = -Ibuild/usr/local/include
+  PLATFORM = linux
 endif
 
 slashtodots = $(addprefix build/,\
@@ -34,7 +36,6 @@ MAIN = src/main.c
 LUA_SRC = $(call rwildcard,src/,*.lua)
 LUA_OBJS = $(call slashtodots,.o,$(LUA_SRC))
 TESTS = $(call rwildcard,test/,*.lua)
-LPEG_OBJS = lpvm.o lpcap.o lptree.o lpcode.o lpprint.o
 LPEG = build/lpeg.o
 
 
@@ -56,9 +57,10 @@ build/%.lua: build/luadeps.mk
 %.o: %.lua $(LJBIN) | build
 	LUA_PATH=";;$(LJPREFIX)/share/luajit-2.0.2/?.lua" $(LJBIN) -b $< $@
 
-build/lpeg.o: $(LJBIN) | build
-	LUADIR=$(LJPREFIX)/include/luajit-2.0/ $(MAKE) -C vendor/LPeg $(LPEG_OBJS)
+$(LPEG): $(LJBIN) | build
+	LUADIR=$(LJPREFIX)/include/luajit-2.0/ $(MAKE) -C vendor/LPeg $(PLATFORM)
 	ld -r vendor/LPeg/*.o -o ./build/lpeg.o
+	mv vendor/LPeg/lpeg.so ./build/
 
 $(LJBIN) $(LJSTATIC): | build
 	DESTDIR=$(CURDIR)/build $(MAKE) -C vendor/LuaJIT install
