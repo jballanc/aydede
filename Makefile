@@ -24,6 +24,7 @@ ifeq ($(strip $(shell uname)), Darwin)
 else
   CFLAGS = -Ibuild/usr/local/include
   PLATFORM = linux
+  LJ_OPTS = -lm -ldl -lc
 endif
 
 slashtodots = $(addprefix build/,\
@@ -35,12 +36,14 @@ rwildcard = $(wildcard $1$2) \
 MAIN = src/main.c
 LUA_SRC = $(call rwildcard,src/,*.lua)
 LUA_OBJS = $(call slashtodots,.o,$(LUA_SRC))
+BUILD_OBJS = $(wildcard build/*.o)
 TESTS = $(call rwildcard,test/,*.lua)
 LPEG = build/lpeg.o
+LJ_A = build/libluajit-5.1.a
 
 
-bin/ay: $(MAIN) $(LPEG) $(LUA_OBJS) | bin
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(LJSTATIC) $(wildcard build/*.o) $(MAIN)
+bin/ay: $(MAIN) $(LPEG) $(LUA_OBJS) $(LJ_A) | bin
+	$(CC) $(CFLAGS) $(LDFLAGS) $(MAIN) $(BUILD_OBJS) $(LJ_A) $(LJ_OPTS) -o $@
 
 build/luadeps.mk: | build
 	$(foreach f,$(LUA_SRC),\
@@ -62,8 +65,11 @@ $(LPEG): $(LJBIN) | build
 	ld -r vendor/LPeg/*.o -o ./build/lpeg.o
 	mv vendor/LPeg/lpeg.so ./build/
 
-$(LJBIN) $(LJSTATIC): | build
+$(LJBIN): | build
 	DESTDIR=$(CURDIR)/build $(MAKE) -C vendor/LuaJIT install
+
+$(LJ_A): $(LJBIN) | build
+	cp $(LJSTATIC) $@
 
 build bin:
 	mkdir -p $@
