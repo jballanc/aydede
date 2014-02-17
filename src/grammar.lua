@@ -32,6 +32,19 @@ local function grammar(parse)
   G.dot = P"."
   G.minus = P"-"
 
+  -- Constructs from the R7RS formal grammar
+  G.initial = V"alpha" + V"special_initial"
+  G.special_initial = S"!$%&*/:<=>?^_~"
+  G.subsequent = V"initial" + V"digit" + V"special_subsequent"
+  G.explicit_sign = S"+-"
+  G.special_subsequent = V"explicit_sign" + S".@"
+  G.vertical_line = P"|"
+  G.xscalar = V"xdigit"^1
+  G.inline_hex_escape = P"\\x" * V"xscalar" * P";"
+  G.mnemonic_escape = P"\\a" + P"\\b" + P"\\t" + P"\\n" + P"\\r"
+  G.symbol_element = -S"|\\" + V"inline_hex_escape" + V"mnemonic_escape" + P"\\|"
+
+
   G.String = C(V"quote" * P(-V"quote"^0 + V"escaped_quote") * V"quote") / parse.string
   G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
   G.Number = V"minus"^-1 * P(V"digit"^1) * P(V"dot" * V"digit"^0)^-1 / parse.number
