@@ -24,11 +24,12 @@ local function grammar(parse)
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
   G = locale(G)
+
   G.open = P"("
   G.close = P")"
   G.quote = P"\""
   G.backslash = P"\\"
-  G.escaped_quote = P(V"backslash" * V"quote")
+  G.escaped_quote = V"backslash" * V"quote"
   G.dot = P"."
   G.minus = P"-"
 
@@ -45,12 +46,13 @@ local function grammar(parse)
   G.symbol_element = -S"|\\" + V"inline_hex_escape" + V"mnemonic_escape" + P"\\|"
 
 
+  -- Parsing constructs
   G.String = C(V"quote" * P(-V"quote"^0 + V"escaped_quote") * V"quote") / parse.string
   G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
   G.Number = V"minus"^-1 * P(V"digit"^1) * P(V"dot" * V"digit"^0)^-1 / parse.number
 
   G.Car = V"Symbol"
-  G.Cdr = P(V"List"^1 + V"Symbol" + V"Number")
+  G.Cdr = V"List"^1 + V"Symbol" + V"Number"
   G.List = Ct(V"open" * P" "^0 * Cg(V"Car", "car") * P" "^0
               * Cg(V"Cdr", "cdr") * P" "^0 * V"close") / parse.list
 
