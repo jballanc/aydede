@@ -11,7 +11,8 @@
 
 require("luaunit")
 
-local P = require("lpeg").P
+local lp = require("lpeg")
+local P = lp.P
 local grammar = require("grammar")
 
 -- A mock parser that will fail for any function call by default
@@ -37,6 +38,14 @@ local function assert_parse(rule, str)
 end
 
 TestGrammar = {}
+
+function TestGrammar:test_exponent()
+  local g = grammar(mock({}))
+  g[1] = 'Suffix'
+  P(lp.Ct(g) / function(t)
+                 assert_is(t['exponent'], 'e+42')
+               end):match('e+42')
+end
 
 function TestGrammar:test_string()
   assert_parse("String", "\"Hello, world\"")

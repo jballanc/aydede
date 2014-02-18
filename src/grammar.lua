@@ -34,6 +34,18 @@ local function grammar(parse)
   G.minus = P"-"
 
   -- Constructs from the R7RS formal grammar
+  -- Numbers in bases 2, 8, 10, and 16
+  G.Suffix = Cg(P(V"exp_marker" * V"sign" * V"digit"^1), "exponent")
+  G.exp_marker = S"eE"
+  G.sign = S"+-"^-1
+  G.exactness = P(P"#i" + P"#e" + P"#I" + P"#E")^-1
+  G.bradix = P"#b" + P"#B"
+  G.oradix = P"#o" + P"#O"
+  G.radix = P(P"#d" + P"#D")^-1
+  G.xradix = P"#x" + P"#X"
+  G.bdigit = S"01"
+  G.odigit = R"07"
+  -- Other basic elements
   G.initial = V"alpha" + V"special_initial"
   G.special_initial = S"!$%&*/:<=>?^_~"
   G.subsequent = V"initial" + V"digit" + V"special_subsequent"
