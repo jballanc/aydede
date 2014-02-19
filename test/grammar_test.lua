@@ -43,8 +43,10 @@ function TestGrammar:test_exponent()
   local g = grammar(mock({}))
   g[1] = 'Suffix'
   P(lp.Ct(g) / function(t)
-                 assert_is(t['exponent'], 'e+42')
-               end):match('e+42')
+                 local exp = t["exp"]
+                 assert_is(exp["sign"], "+")
+                 assert_is(exp["value"], "42")
+               end):match("e+42")
 end
 
 function TestGrammar:test_string()
