@@ -79,7 +79,7 @@ build bin:
 
 test: $(LJBIN) $(LPEG)
 	@ $(foreach t,$(TESTS),\
-	  LUA_PATH=";;./src/?.lua;./test/?.lua;./vendor/luaunit/?.lua" \
+	  LUA_PATH=";;./src/?.lua;./test/?.lua;./vendor/luaunit/?.lua;./vendor/LPeg/?.lua" \
 	  LUA_CPATH=";;./build/?.so"\
 	  $(LJBIN) $(t))
 
