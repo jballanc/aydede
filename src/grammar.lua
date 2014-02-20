@@ -15,6 +15,7 @@
 
 
 local lp = require("lpeg")
+local re = require("re")
 local P, R, S, V, C, Cg, Ct, locale
       = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
@@ -24,6 +25,13 @@ local function grammar(parse)
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
   G = locale(G)
+  re.updatelocale()
+  G.num = re.compile [[
+    suffix              <- {:exp: {| exp_marker sign exp_value |} :}
+    exp_marker          <- "e" / "E"
+    sign                <- {:sign: ("+" / "-")? :}
+    exp_value           <- {:value: %digit + :}
+  ]]
 
   G.open = P"("
   G.close = P")"
@@ -35,10 +43,12 @@ local function grammar(parse)
 
   -- Constructs from the R7RS formal grammar
   -- Numbers in bases 2, 8, 10, and 16
+  --[[
   G.suffix = Cg(Ct(V"exp_marker" * V"sign" * V"exp_value"), "exp")
   G.exp_value = Cg(V"digit"^1, "value")
   G.exp_marker = S"eE"
   G.sign = Cg(S"+-"^-1, "sign")
+  ]]
   G.exactness = P(P"#i" + P"#e" + P"#I" + P"#E")^-1
   G.bradix = P"#b" + P"#B"
   G.oradix = P"#o" + P"#O"
