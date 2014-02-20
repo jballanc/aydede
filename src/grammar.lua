@@ -35,7 +35,8 @@ local function grammar(parse)
 
   -- Constructs from the R7RS formal grammar
   -- Numbers in bases 2, 8, 10, and 16
-  G.Suffix = Cg(Ct(P(V"exp_marker" * V"sign" * Cg(V"digit"^1, "value"))), "exp")
+  G.suffix = Cg(Ct(V"exp_marker" * V"sign" * V"exp_value"), "exp")
+  G.exp_value = Cg(V"digit"^1, "value")
   G.exp_marker = S"eE"
   G.sign = Cg(S"+-"^-1, "sign")
   G.exactness = P(P"#i" + P"#e" + P"#I" + P"#E")^-1

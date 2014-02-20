@@ -41,7 +41,7 @@ TestGrammar = {}
 
 function TestGrammar:test_exponent()
   local g = grammar(mock({}))
-  g[1] = 'Suffix'
+  g[1] = 'suffix'
   P(lp.Ct(g) / function(t)
                  local exp = t["exp"]
                  assert_is(exp["sign"], "+")
