@@ -62,8 +62,9 @@ build/%.lua: build/luadeps.mk
 
 $(LPEG): $(LJBIN) | build
 	LUADIR=$(LJPREFIX)/include/luajit-2.0/ $(MAKE) -C vendor/LPeg $(PLATFORM)
-	ld -r vendor/LPeg/*.o -o ./build/lpeg.o
-	mv vendor/LPeg/lpeg.so ./build/
+	ld -r vendor/LPeg/*.o -o $(CURDIR)/build/lpeg.o
+	mv vendor/LPeg/lpeg.so $(CURDIR)/build/
+	cp vendor/LPeg/re.lua $(CURDIR)/build/
 
 $(LJBIN): | build
 	DESTDIR=$(CURDIR)/build $(MAKE) -C vendor/LuaJIT install
