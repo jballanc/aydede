@@ -20,40 +20,32 @@ local P, R, S, V, C, Cg, Ct, locale
       = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
 local function grammar(parse)
-  local G = {"Program"}
+  local G
 
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
-  G = locale(G)
   re.updatelocale()
-  G.num = re.compile [[
+  G = re.compile [[
     suffix              <- {:exp: {| exp_marker sign exp_value |} :}
     exp_marker          <- "e" / "E"
     sign                <- {:sign: ("+" / "-")? :}
     exp_value           <- {:value: %digit + :}
+
+    open                <- "("
+    close               <- ")"
+    quote               <- '"'
+    backslash           <- "\\"
+    escaped_quote       <- backslash quote
+    dot                 <- "."
+    minus               <- "-"
+
+    exactness           <- ("#i" / "#I" / "#e" / "#E")?
+    bradix              <- "#b" / "#B"
+    oradix              <- "#o" / "#O"
+    radix              <- ("#d" / "#D") ? quester
+    xradix              <- "#b" / "#B"
   ]]
 
-  G.open = P"("
-  G.close = P")"
-  G.quote = P"\""
-  G.backslash = P"\\"
-  G.escaped_quote = V"backslash" * V"quote"
-  G.dot = P"."
-  G.minus = P"-"
-
-  -- Constructs from the R7RS formal grammar
-  -- Numbers in bases 2, 8, 10, and 16
-  --[[
-  G.suffix = Cg(Ct(V"exp_marker" * V"sign" * V"exp_value"), "exp")
-  G.exp_value = Cg(V"digit"^1, "value")
-  G.exp_marker = S"eE"
-  G.sign = Cg(S"+-"^-1, "sign")
-  ]]
-  G.exactness = P(P"#i" + P"#e" + P"#I" + P"#E")^-1
-  G.bradix = P"#b" + P"#B"
-  G.oradix = P"#o" + P"#O"
-  G.radix = P(P"#d" + P"#D")^-1
-  G.xradix = P"#x" + P"#X"
   G.bdigit = S"01"
   G.odigit = R"07"
   -- Other basic elements
