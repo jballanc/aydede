@@ -17,8 +17,10 @@ local grammar = require("grammar")
 
 -- A mock parser that will fail for any function call by default
 local function failed_call(table, key)
-  return function (...)
-    error("Unexpected call to method: "..tostring(key), 2)
+  if (key:sub(1,6) == "parse_") then
+    return function (...)
+      error("Unexpected call to method: "..tostring(key), 2)
+    end
   end
 end
 
@@ -28,25 +30,23 @@ end
 
 local function assert_parse(rule, str)
   local rule_tbl = {}
-  rule_tbl[rule:lower()] = function(s)
-                             assert_is(s, str)
-                           end
+  rule_tbl["parse_"..rule:lower()] = function(s)
+                                       assert_is(s, str)
+                                     end
   p = mock(rule_tbl)
   local g = grammar(p)
-  g[1] = rule
-  P(g):match(str)
+  assert_true(g:match(str))
 end
 
 TestGrammar = {}
 
 function TestGrammar:test_exponent()
   local g = grammar(mock({}))
-  g[1] = 'num'
-  P(lp.Ct(g) / function(t)
+  assert_true(P(lp.Ct(g) / function(t)
                  local exp = t["exp"]
                  assert_is(exp["sign"], "+")
                  assert_is(exp["value"], "42")
-               end):match("e+42")
+               end):match("e+42"))
 end
 
 function TestGrammar:test_string()

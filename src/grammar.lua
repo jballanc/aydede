@@ -25,53 +25,62 @@ local function grammar(parse)
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
   re.updatelocale()
-  G = re.compile [[
+
+  G = re.compile([[
+    -- Placeholder until I figure a better way to test...
+    patts <- suffix / Symbol / Number / String
+
     suffix              <- {:exp: {| exp_marker sign exp_value |} :}
-    exp_marker          <- "e" / "E"
-    sign                <- {:sign: ("+" / "-")? :}
-    exp_value           <- {:value: %digit + :}
+    exp_marker          <- [eE]
+    explicit_sign       <- [+-]
+    sign                <- {:sign: explicit_sign? :}
+    exp_value           <- {:value: %digit+ :}
 
-    open                <- "("
-    close               <- ")"
-    quote               <- '"'
-    backslash           <- "\\"
+    open                <- [(]
+    close               <- [)]
+    quote               <- ["]
+    not_quote           <- [^"]
+    backslash           <- [\\]
     escaped_quote       <- backslash quote
-    dot                 <- "."
-    minus               <- "-"
+    dot                 <- [.]
+    minus               <- [-]
 
-    exactness           <- ("#i" / "#I" / "#e" / "#E")?
-    bradix              <- "#b" / "#B"
-    oradix              <- "#o" / "#O"
-    radix              <- ("#d" / "#D") ? quester
-    xradix              <- "#b" / "#B"
-  ]]
+    -- Rules for the R7RS numeric tower
+    exactness           <- ([#] ([iI] / [eE]))?
+    bradix              <- [#] [bB]
+    oradix              <- [#] [oO]
+    radix               <- ([#] [dD])?
+    xradix              <- [#] [xX]
+    bdigit              <- [01]
+    odigit              <- [0-7]
 
-  G.bdigit = S"01"
-  G.odigit = R"07"
-  -- Other basic elements
-  G.initial = V"alpha" + V"special_initial"
-  G.special_initial = S"!$%&*/:<=>?^_~"
-  G.subsequent = V"initial" + V"digit" + V"special_subsequent"
-  G.explicit_sign = S"+-"
-  G.special_subsequent = V"explicit_sign" + S".@"
-  G.vertical_line = P"|"
-  G.xscalar = V"xdigit"^1
-  G.inline_hex_escape = P"\\x" * V"xscalar" * P";"
-  G.mnemonic_escape = P"\\a" + P"\\b" + P"\\t" + P"\\n" + P"\\r"
-  G.symbol_element = -S"|\\" + V"inline_hex_escape" + V"mnemonic_escape" + P"\\|"
+    -- Other basic elements
+    initial             <- %alpha / special_initial
+    special_initial     <- [!$%&*/:<=>?^_~]
+    subsequent          <- initial / %digit / special_subsequent
+    special_subsequent  <- explicit_sign / [.@]
+    vertical_line       <- [|]
+    xscalar             <- %xdigit+
+    inline_hex_escape   <- backslash [x] xscalar [;]
+    mnemonic_escape     <- backslash [abtnr]
+    symbol_element      <- [^|\\] / inline_hex_escape / mnemonic_escape / "\\|"
 
+    -- Parsing constructs
+    String              <- { quote (escaped_quote / not_quote)* quote } -> parse_string
+    Symbol              <- { %alpha %alnum* } -> parse_symbol
+    Number              <- { sign %digit+ (dot %digit*)? } -> parse_number
 
-  -- Parsing constructs
-  G.String = C(V"quote" * P(-V"quote"^0 + V"escaped_quote") * V"quote") / parse.string
-  G.Symbol = C(V"alpha" * V"alnum"^0) / parse.symbol
-  G.Number = V"minus"^-1 * P(V"digit"^1) * P(V"dot" * V"digit"^0)^-1 / parse.number
-
-  G.Car = V"Symbol"
-  G.Cdr = V"List"^1 + V"Symbol" + V"Number"
-  G.List = Ct(V"open" * P" "^0 * Cg(V"Car", "car") * P" "^0
-              * Cg(V"Cdr", "cdr") * P" "^0 * V"close") / parse.list
-
-  G.Program = Ct(V"List"^1)
+    -- Simple forms
+    Car                 <- Symbol
+    Cdr                 <- List+ / Symbol / Number
+    List                <- {|
+                              open %space*
+                              {:car: Car :} %space+
+                              {:cdr: Cdr :} %space*
+                              close
+                           |} -> parse_list
+    Program             <- {| List+ |}
+  ]], parse)
 
   return G
 end
