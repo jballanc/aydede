@@ -20,13 +20,11 @@ local P, R, S, V, C, Cg, Ct, locale
       = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
 local function grammar(parse)
-  local G
-
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
   re.updatelocale()
 
-  G = re.compile([[
+  return re.compile([[
     -- "Program" is the top-level construct in Scheme, but for now we're using it to proxy
     -- to other forms for testing...
     Program             <- CommandOrDefinition
@@ -99,8 +97,6 @@ local function grammar(parse)
                               close
                            |} -> parse_list
   ]], parse)
-
-  return G
 end
 
 return grammar
