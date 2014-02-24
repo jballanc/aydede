@@ -27,8 +27,27 @@ local function grammar(parse)
   re.updatelocale()
 
   G = re.compile([[
-    -- Placeholder until I figure a better way to test...
-    patts <- suffix / Symbol / Number / String
+    -- "Program" is the top-level construct in Scheme, but for now we're using it to proxy
+    -- to other forms for testing...
+    Program             <- CommandOrDefinition
+
+    -- TODO: need to add the "...OrDefinition" part. For now just proxying through to
+    -- forms we want to test...
+    CommandOrDefinition <- Command
+    Command             <- Expression
+
+    -- "Expression" encompases most valid forms, including everything that counts as a
+    -- "Datum" for processing by the REPL. More elements will be added to this list as
+    -- more of the grammar is defined.
+    Expression          <- Literal  -- TODO: Literal should come after Symbol
+                                    -- ...just here to test suffix for now
+                         / Symbol   -- Synonymous with "Identifier"
+
+    Literal             <- SelfEvaluating
+
+    SelfEvaluating      <- suffix   -- just putting this here for an interim test...
+                         / String
+                         / Number
 
     suffix              <- {:exp: {| exp_marker sign exp_value |} :}
     exp_marker          <- [eE]
@@ -79,7 +98,6 @@ local function grammar(parse)
                               {:cdr: Cdr :} %space*
                               close
                            |} -> parse_list
-    Program             <- {| List+ |}
   ]], parse)
 
   return G
