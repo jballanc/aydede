@@ -48,7 +48,6 @@ local function grammar(parse)
                          / Number
 
     explicit_sign       <- [+-]
-    exp_value           <- {:value: digit+ :}
 
     open                <- [(]
     close               <- [)]
@@ -60,9 +59,15 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
-    suffix              <- {:exp: {| exp_marker sign exp_value |} :}
+    suffix              <- {:exp:
+                             exp_marker
+                             {|
+                               {:sign: sign :}
+                               {:value: digit+ :}
+                             |}
+                           :}?
     exp_marker          <- [eE]
-    sign                <- {:sign: explicit_sign? :}
+    sign                <- explicit_sign?
     exactness           <- ([#] ([iI] / [eE]))?
     bradix              <- [#] [bB]
     oradix              <- [#] [oO]
@@ -87,7 +92,7 @@ local function grammar(parse)
     -- Parsing constructs
     String              <- { quote (escaped_quote / not_quote)* quote } -> parse_string
     Symbol              <- { %alpha %alnum* } -> parse_symbol
-    Number              <- { sign digit+ (dot digit*)? } -> parse_number
+    Number              <- { sign digit+ (dot digit*)? suffix } -> parse_number
 
     -- Simple forms
     Car                 <- Symbol
