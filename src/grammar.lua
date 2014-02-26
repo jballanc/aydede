@@ -47,11 +47,8 @@ local function grammar(parse)
                          / String
                          / Number
 
-    suffix              <- {:exp: {| exp_marker sign exp_value |} :}
-    exp_marker          <- [eE]
     explicit_sign       <- [+-]
-    sign                <- {:sign: explicit_sign? :}
-    exp_value           <- {:value: %digit+ :}
+    exp_value           <- {:value: digit+ :}
 
     open                <- [(]
     close               <- [)]
@@ -63,6 +60,9 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
+    suffix              <- {:exp: {| exp_marker sign exp_value |} :}
+    exp_marker          <- [eE]
+    sign                <- {:sign: explicit_sign? :}
     exactness           <- ([#] ([iI] / [eE]))?
     bradix              <- [#] [bB]
     oradix              <- [#] [oO]
@@ -70,14 +70,16 @@ local function grammar(parse)
     xradix              <- [#] [xX]
     bdigit              <- [01]
     odigit              <- [0-7]
+    digit               <- %digit
+    xdigit              <- %xdigit
 
     -- Other basic elements
     initial             <- %alpha / special_initial
     special_initial     <- [!$%&*/:<=>?^_~]
-    subsequent          <- initial / %digit / special_subsequent
+    subsequent          <- initial / digit / special_subsequent
     special_subsequent  <- explicit_sign / [.@]
     vertical_line       <- [|]
-    xscalar             <- %xdigit+
+    xscalar             <- xdigit+
     inline_hex_escape   <- backslash [x] xscalar [;]
     mnemonic_escape     <- backslash [abtnr]
     symbol_element      <- [^|\\] / inline_hex_escape / mnemonic_escape / "\\|"
@@ -85,7 +87,7 @@ local function grammar(parse)
     -- Parsing constructs
     String              <- { quote (escaped_quote / not_quote)* quote } -> parse_string
     Symbol              <- { %alpha %alnum* } -> parse_symbol
-    Number              <- { sign %digit+ (dot %digit*)? } -> parse_number
+    Number              <- { sign digit+ (dot digit*)? } -> parse_number
 
     -- Simple forms
     Car                 <- Symbol
