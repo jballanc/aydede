@@ -59,6 +59,12 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
+    inf                 <- {:sign: explicit_sign :} [iI][nN][fF] dot '0'
+    nan                 <- {:sign: explicit_sign :} [nN][aA][nN] dot '0'
+    infnan              <- {|
+                             {:inf: inf :}
+                           / {:nan: nan :}
+                           |}
     suffix              <- {:exp:
                              exp_marker
                              {|
