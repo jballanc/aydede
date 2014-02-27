@@ -59,6 +59,14 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
+    bprefix             <- {:radix: bradix :} {:exactness: exactness :}
+                         / {:exactness: exactness :} {:radix: bradix :}
+    oprefix             <- {:radix: oradix :} {:exactness: exactness :}
+                         / {:exactness: exactness :} {:radix: oradix :}
+    prefix              <- {:radix: radix :} {:exactness: exactness :}
+                         / {:exactness: exactness :} {:radix: radix :}
+    xprefix             <- {:radix: xradix :} {:exactness: exactness :}
+                         / {:exactness: exactness :} {:radix: xradix :}
     inf                 <- {:sign: explicit_sign :} [iI][nN][fF] dot '0'
     nan                 <- {:sign: explicit_sign :} [nN][aA][nN] dot '0'
     infnan              <- {|
