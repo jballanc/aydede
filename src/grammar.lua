@@ -59,6 +59,10 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
+    buint               <- bdigit +
+    ouint               <- odigit +
+    uint                <- digit +
+    xuint               <- xdigit +
     bprefix             <- {:radix: bradix :} {:exactness: exactness :}
                          / {:exactness: exactness :} {:radix: bradix :}
     oprefix             <- {:radix: oradix :} {:exactness: exactness :}
