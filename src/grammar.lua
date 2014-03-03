@@ -51,14 +51,23 @@ local function grammar(parse)
 
     open                <- [(]
     close               <- [)]
+    slash               <- [/]
+    backslash           <- [\\]
     quote               <- ["]
     not_quote           <- [^"]
-    backslash           <- [\\]
     escaped_quote       <- backslash quote
     dot                 <- [.]
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
+    ureal               <- {:whole: uint :}
+                         / {:numerator: uint :} slash {:denominator: uint :}
+                         / decimal
+    xureal              <- {:whole: xuint :}
+                         / {:numerator: xuint :} slash {:denominator: xuint :}
+    decimal             <- {:whole: uint :} suffix
+                         / dot {:decimal: digit+ :} suffix
+                         / {:whole: digit+ :} dot {:decimal: digit+ :} suffix
     buint               <- bdigit +
     ouint               <- odigit +
     uint                <- digit +
