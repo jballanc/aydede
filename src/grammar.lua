@@ -67,7 +67,7 @@ local function grammar(parse)
                          / {:numerator: xuint :} slash {:denominator: xuint :}
     decimal             <- {:whole: uint :} suffix
                          / dot {:decimal: digit+ :} suffix
-                         / {:whole: digit+ :} dot {:decimal: digit+ :} suffix
+                         / {:whole: digit+ :} dot {:fraction: digit+ :} suffix
     buint               <- bdigit +
     ouint               <- odigit +
     uint                <- digit +
