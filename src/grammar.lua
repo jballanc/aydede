@@ -60,6 +60,10 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
+    bureal              <- {:whole: buint :}
+                         / {:numerator: buint :} slash {:denominator: buint :}
+    oureal              <- {:whole: ouint :}
+                         / {:numerator: ouint :} slash {:denominator: ouint :}
     ureal               <- {:whole: uint :}
                          / {:numerator: uint :} slash {:denominator: uint :}
                          / decimal
