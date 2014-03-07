@@ -37,9 +37,8 @@ local function grammar(parse)
     -- "Expression" encompases most valid forms, including everything that counts as a
     -- "Datum" for processing by the REPL. More elements will be added to this list as
     -- more of the grammar is defined.
-    Expression          <- Literal  -- TODO: Literal should come after Symbol
-                                    -- ...just here to test suffix for now
-                         / Symbol   -- Synonymous with "Identifier"
+    Expression          <- Symbol   -- Synonymous with "Identifier"
+                         / Literal
 
     Literal             <- SelfEvaluating
 
@@ -57,6 +56,17 @@ local function grammar(parse)
     escaped_quote       <- backslash quote
     dot                 <- [.]
     minus               <- [-]
+
+    -- Other basic elements
+    initial             <- %alpha / special_initial
+    special_initial     <- [!$%&*/:<=>?^_~]
+    subsequent          <- initial / digit / special_subsequent
+    special_subsequent  <- explicit_sign / [.@]
+    vertical_line       <- [|]
+    xscalar             <- xdigit+
+    inline_hex_escape   <- backslash [x] xscalar [;]
+    mnemonic_escape     <- backslash [abtnr]
+    symbol_element      <- [^|\\] / inline_hex_escape / mnemonic_escape / "\\|"
 
     -- Rules for the R7RS numeric tower
     Number              <- bnum / onum / num / xnum
@@ -130,17 +140,6 @@ local function grammar(parse)
     odigit              <- [0-7]
     digit               <- %digit
     xdigit              <- %xdigit
-
-    -- Other basic elements
-    initial             <- %alpha / special_initial
-    special_initial     <- [!$%&*/:<=>?^_~]
-    subsequent          <- initial / digit / special_subsequent
-    special_subsequent  <- explicit_sign / [.@]
-    vertical_line       <- [|]
-    xscalar             <- xdigit+
-    inline_hex_escape   <- backslash [x] xscalar [;]
-    mnemonic_escape     <- backslash [abtnr]
-    symbol_element      <- [^|\\] / inline_hex_escape / mnemonic_escape / "\\|"
 
     -- Parsing constructs
     String              <- { quote (escaped_quote / not_quote)* quote } -> parse_string
