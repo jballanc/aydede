@@ -43,8 +43,7 @@ local function grammar(parse)
 
     Literal             <- SelfEvaluating
 
-    SelfEvaluating      <- suffix   -- just putting this here for an interim test...
-                         / String
+    SelfEvaluating      <- String
                          / Number
 
     explicit_sign       <- [+-]
@@ -60,18 +59,33 @@ local function grammar(parse)
     minus               <- [-]
 
     -- Rules for the R7RS numeric tower
-    bureal              <- {:whole: buint :}
-                         / {:numerator: buint :} slash {:denominator: buint :}
-    oureal              <- {:whole: ouint :}
-                         / {:numerator: ouint :} slash {:denominator: ouint :}
-    ureal               <- {:whole: uint :}
+    Number              <- bnum / onum / num / xnum
+    bnum                <- { {| {:prefix: bprefix :} {:num: bcomplex :} |} } -> parse_bnum
+    onum                <- { {| {:prefix: oprefix :} {:num: ocomplex :} |} } -> parse_onum
+    num                 <- { {| {:prefix: prefix :} {:num: complex :} |} } -> parse_num
+    xnum                <- { {| {:prefix: xprefix :} {:num: xcomplex :} |} } -> parse_xnum
+    -- For a true full numeric tower, we would have to implement all the variations on
+    -- complex number forms. For now, we only consider simple real numbers.
+    bcomplex            <- breal
+    ocomplex            <- oreal
+    complex             <- real
+    xcomplex            <- xreal
+    breal               <- {| {:sign: sign :} bureal |} / infnan
+    oreal               <- {| {:sign: sign :} oureal |} / infnan
+    real                <- {| {:sign: sign :} ureal |} / infnan
+    xreal               <- {| {:sign: sign :} xureal |} / infnan
+    bureal              <- {:numerator: buint :} slash {:denominator: buint :}
+                         / {:whole: buint :}
+    oureal              <- {:numerator: ouint :} slash {:denominator: ouint :}
+                         / {:whole: ouint :}
+    ureal               <- decimal
                          / {:numerator: uint :} slash {:denominator: uint :}
-                         / decimal
-    xureal              <- {:whole: xuint :}
-                         / {:numerator: xuint :} slash {:denominator: xuint :}
-    decimal             <- {:whole: uint :} suffix
-                         / dot {:decimal: digit+ :} suffix
-                         / {:whole: digit+ :} dot {:fraction: digit+ :} suffix
+                         / {:whole: uint :}
+    xureal              <- {:numerator: xuint :} slash {:denominator: xuint :}
+                         / {:whole: xuint :}
+    decimal             <- {:whole: digit+ :} dot {:fraction: digit+ :} suffix
+                         / dot {:fraction: digit+ :} suffix
+                         / {:whole: uint :} suffix
     buint               <- bdigit +
     ouint               <- odigit +
     uint                <- digit +
@@ -123,7 +137,6 @@ local function grammar(parse)
     -- Parsing constructs
     String              <- { quote (escaped_quote / not_quote)* quote } -> parse_string
     Symbol              <- { %alpha %alnum* } -> parse_symbol
-    Number              <- { sign digit+ (dot digit*)? suffix } -> parse_number
 
     -- Simple forms
     Car                 <- Symbol
