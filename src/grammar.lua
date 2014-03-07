@@ -27,18 +27,21 @@ local function grammar(parse)
   return re.compile([[
     -- "Program" is the top-level construct in Scheme, but for now we're using it to proxy
     -- to other forms for testing...
-    Program             <- CommandOrDefinition
+    Program             <- --ImportDecl
+                           CommandOrDefinition
 
     -- TODO: need to add the "...OrDefinition" part. For now just proxying through to
     -- forms we want to test...
     CommandOrDefinition <- Command
+                         --Definition
+                         --"(begin" CommandOrDefinition+ ")"
     Command             <- Expression
 
     -- "Expression" encompases most valid forms, including everything that counts as a
     -- "Datum" for processing by the REPL. More elements will be added to this list as
     -- more of the grammar is defined.
-    Expression          <- Symbol   -- Synonymous with "Identifier"
-                         / Literal
+    Expression          <- Literal
+                         / Symbol   -- Synonymous with "Identifier"
 
     Literal             <- SelfEvaluating
 
