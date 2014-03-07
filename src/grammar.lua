@@ -46,8 +46,8 @@ local function grammar(parse)
     Literal             <- SelfEvaluating
 
     SelfEvaluating      <- Boolean
-                         / String
                          / Number
+                         / String
 
     Boolean             <- { {} "#true" / "#t" } -> parse_true
                          / { {} "#false" / "#f" } -> parse_false
