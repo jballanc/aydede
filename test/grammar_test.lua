@@ -46,8 +46,11 @@ TestGrammar = {}
 
 function TestGrammar:test_exponent()
   local p = {}
-  function p.parse_num(_, t)
+  function p.parse_num(s, p, t)
+    assert_is(s, "-11.23e42")
+    assert_is(p, 1)
     assert_is_table(t)
+
     assert_is(t["prefix"], "")
     assert_is_table(t["num"])
 

@@ -60,10 +60,18 @@ local function grammar(parse)
 
     -- Rules for the R7RS numeric tower
     Number              <- bnum / onum / num / xnum
-    bnum                <- { {| {:prefix: bprefix :} {:num: bcomplex :} |} } -> parse_bnum
-    onum                <- { {| {:prefix: oprefix :} {:num: ocomplex :} |} } -> parse_onum
-    num                 <- { {| {:prefix: prefix :} {:num: complex :} |} } -> parse_num
-    xnum                <- { {| {:prefix: xprefix :} {:num: xcomplex :} |} } -> parse_xnum
+    bnum                <- { {}
+                             {| {:prefix: bprefix :} {:num: bcomplex :} |}
+                           } -> parse_bnum
+    onum                <- { {}
+                             {| {:prefix: oprefix :} {:num: ocomplex :} |}
+                           } -> parse_onum
+    num                 <- { {}
+                             {| {:prefix: prefix :} {:num: complex :} |}
+                           } -> parse_num
+    xnum                <- { {}
+                             {| {:prefix: xprefix :} {:num: xcomplex :} |}
+                           } -> parse_xnum
     -- For a true full numeric tower, we would have to implement all the variations on
     -- complex number forms. For now, we only consider simple real numbers.
     bcomplex            <- breal
