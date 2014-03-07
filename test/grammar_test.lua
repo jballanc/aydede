@@ -44,6 +44,13 @@ end
 
 TestGrammar = {}
 
+function TestGrammar:test_booleans()
+  assert_parse("true", "#true")
+  assert_parse("true", "#t")
+  assert_parse("false", "#false")
+  assert_parse("false", "#f")
+end
+
 function TestGrammar:test_exponent()
   local p = {}
   function p.parse_num(s, p, t)

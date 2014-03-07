@@ -45,11 +45,13 @@ local function grammar(parse)
 
     Literal             <- SelfEvaluating
 
-    SelfEvaluating      <- String
+    SelfEvaluating      <- Boolean
+                         / String
                          / Number
 
+    Boolean             <- { {} "#true" / "#t" } -> parse_true
+                         / { {} "#false" / "#f" } -> parse_false
     explicit_sign       <- [+-]
-
     open                <- [(]
     close               <- [)]
     slash               <- [/]
