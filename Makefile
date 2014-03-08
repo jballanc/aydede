@@ -75,13 +75,24 @@ $(LJ_A): $(LJBIN) | build
 build bin:
 	mkdir -p $@
 
-.PHONY: clean test
+.PHONY: clean test spec-basic
 
 test: $(LJBIN) $(LPEG)
 	@ $(foreach t,$(TESTS),\
 	  LUA_PATH=";;./src/?.lua;./test/?.lua;./vendor/luaunit/?.lua;./vendor/LPeg/?.lua" \
 	  LUA_CPATH=";;./build/?.so"\
 	  $(LJBIN) $(t))
+
+# Scheme language specs are taken from Chibi Scheme
+spec-basic: bin/ay
+	@for f in spec/basic/*.scm; do \
+	  bin/ay $$f >$${f%.scm}.out 2>$${f%.scm}.err; \
+	  if diff -q $${f%.scm}.out $${f%.scm}.res; then \
+	  	echo "[PASS] $${f%.scm}"; \
+	  else \
+	  	echo "[FAIL] $${f%.scm}"; \
+	  fi; \
+	done
 
 clean:
 	$(MAKE) clean -C vendor/lpeg
