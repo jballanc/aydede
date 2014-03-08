@@ -25,14 +25,14 @@ Licensed under the BSD 2-Clause License. See COPYING for full license details.
 
 ---
 
-LuaJIT Copyright (C) 2005-2013 Mike Pall. All rights reserved.
+The following 3rd party Open Source projects have been used in part or in full. License
+details for each can be found in the appropriate text file in the `licenses` directory.
 
-(See vendor/LuaJIT/COPYRIGHT for full details.)
+* LuaJIT Copyright (C) 2005-2013 Mike Pall. All rights reserved.
 
-LPeg Copyright © 2013 Lua.org, PUC-Rio.
+* LPeg Copyright © 2013 Lua.org, PUC-Rio.
 
-(For full documentation and license terms, see: http://www.inf.puc-rio.br/~roberto/lpeg/)
+* Luaunit Copyright (c) 2005,2007,2012, Philippe Fremy <phil at freehackers dot org>
 
-Luaunit Copyright (c) 2005,2007,2012, Philippe Fremy <phil at freehackers dot org>
+* Chibi Scheme, Copyright (c) 2009-2012 Alex Shinn
 
-(See vendor/luaunit/LICENSE.txt for full details)
