@@ -97,6 +97,7 @@ spec-basic: bin/ay
 clean:
 	$(MAKE) clean -C vendor/lpeg
 	$(MAKE) clean -C vendor/LuaJIT
+	rm -rf spec/basic/*.{err,out}
 	rm -rf build bin
 
 # vim:nolist:ts=4:tw=80
