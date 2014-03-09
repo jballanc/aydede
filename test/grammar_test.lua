@@ -51,6 +51,12 @@ function TestGrammar:test_booleans()
   assert_parse("false", "#f")
 end
 
+function TestGrammar:test_character()
+  assert_parse("character", "#\\a")
+  assert_parse("character", "#\\newline")
+  assert_parse("character", "#\\xACB123")
+end
+
 function TestGrammar:test_exponent()
   local p = {}
   function p.parse_num(s, p, t)
