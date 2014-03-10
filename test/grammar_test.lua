@@ -57,6 +57,24 @@ function TestGrammar:test_character()
   assert_parse("character", "#\\xACB123")
 end
 
+function TestGrammar:test_string()
+  assert_parse("string", "\"Hello, world\"")
+end
+
+function TestGrammar:test_escaped_quote_in_string()
+  assert_parse("string", "\"I say, \\\"this works.\\\"\"")
+end
+
+function TestGrammar:test_multiline_string()
+  assert_parse("string", "\"carried over multiple\\ \\n lines\"")
+end
+
+function TestGrammar:test_complex_string()
+  assert_parse("string",
+    [["This is a test with \"escaped quotes\", a line\\
+    break, a \\xABC123 hex escape and \b more..."]])
+end
+
 function TestGrammar:test_exponent()
   local p = {}
   function p.parse_num(s, p, t)
@@ -82,16 +100,8 @@ function TestGrammar:test_exponent()
   assert_true(g:match("-11.23e42"))
 end
 
-function TestGrammar:test_string()
-  assert_parse("String", "\"Hello, world\"")
-end
-
-function TestGrammar:test_escaped_quote_in_string()
-  assert_parse("String", "\"I say, \\\"this works.\\\"\"")
-end
-
 function TestGrammar:test_symbol()
-  assert_parse("Symbol", "foo")
+  assert_parse("symbol", "foo")
 end
 
 function TestGrammar:test_decimal()

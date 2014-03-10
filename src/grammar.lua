@@ -57,8 +57,6 @@ local function grammar(parse)
     slash               <- [/]
     backslash           <- [\\]
     quote               <- ["]
-    not_quote           <- [^"]
-    escaped_quote       <- backslash quote
     dot                 <- [.]
     minus               <- [-]
 
@@ -67,7 +65,13 @@ local function grammar(parse)
     special_initial     <- [!$%&*/:<=>?^_~]
     subsequent          <- initial / digit / special_subsequent
     special_subsequent  <- explicit_sign / [.@]
+    space               <- [ ]
+    tab                 <- [\t]
+    newline             <- [\n]
+    return              <- [\r]
+    intraline_whitespace<- space / tab
     vertical_line       <- [|]
+    line_ending         <- newline / return newline / return
     xscalar             <- xdigit+
     inline_hex_escape   <- backslash [x] xscalar [;]
     mnemonic_escape     <- backslash [abtnr]
@@ -83,6 +87,15 @@ local function grammar(parse)
     character_name      <- "alarm" / "backspace" / "delete" / "escape" / "newline"
                          / "null" / "return" / "space" / "tab"
     hex_scalar_value    <- xdigit+
+
+    String              <- { {} quote {:string: string_element* :} quote } -> parse_string
+    string_element      <- [^"\\]
+                         / mnemonic_escape
+                         / backslash quote
+                         / backslash backslash
+                         / backslash intraline_whitespace* line_ending
+                           intraline_whitespace*
+                         / inline_hex_escape
 
     -- Rules for the R7RS numeric tower
     Number              <- bnum / onum / num / xnum
@@ -158,7 +171,6 @@ local function grammar(parse)
     xdigit              <- %xdigit
 
     -- Parsing constructs
-    String              <- { quote (escaped_quote / not_quote)* quote } -> parse_string
     Symbol              <- { %alpha %alnum* } -> parse_symbol
 
     -- Simple forms
