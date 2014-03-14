@@ -49,6 +49,7 @@ local function grammar(parse)
                          / Number
                          / Character
                          / String
+                         / Bytevector
 
     -- Some useful tokens
     explicit_sign       <- [+-]
@@ -96,6 +97,9 @@ local function grammar(parse)
                          / backslash intraline_whitespace* line_ending
                            intraline_whitespace*
                          / inline_hex_escape
+
+    Bytevector          <- { {} "#u8" open {:bytes: byte* :} close } -> parse_bytevector
+    byte                <- [0-255]
 
     -- Rules for the R7RS numeric tower
     Number              <- bnum / onum / num / xnum

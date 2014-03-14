@@ -75,6 +75,10 @@ function TestGrammar:test_complex_string()
     break, a \\xABC123 hex escape and \b more..."]])
 end
 
+function TestGrammar:test_bytevector()
+  assert_parse("bytevector", "#u8(11)")
+end
+
 function TestGrammar:test_exponent()
   local p = {}
   function p.parse_num(s, p, t)
