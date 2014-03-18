@@ -77,6 +77,7 @@ end
 
 function TestGrammar:test_bytevector()
   assert_parse("bytevector", "#u8(11)")
+  assert_parse("bytevector", "#u8(4 8 15 16 23 42)")
 end
 
 function TestGrammar:test_exponent()

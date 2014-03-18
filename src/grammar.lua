@@ -98,8 +98,13 @@ local function grammar(parse)
                            intraline_whitespace*
                          / inline_hex_escape
 
-    Bytevector          <- { {} "#u8" open {:bytes: byte* :} close } -> parse_bytevector
-    byte                <- [0-255]
+    Bytevector          <- { {} "#u8" open
+                             {| {:bytes: byte (intraline_whitespace+ byte)* :} |}
+                           close } -> parse_bytevector
+    byte                <- "2" "5" [0-5]
+                         / "2" [0-4] [0-9]
+                         / "1" [0-9]^2
+                         / [0-9]^-2
 
     -- Rules for the R7RS numeric tower
     Number              <- bnum / onum / num / xnum
