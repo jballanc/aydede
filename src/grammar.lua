@@ -81,31 +81,6 @@ local function grammar(parse)
     Boolean             <- { {} "#true" / "#t" } -> parse_true
                          / { {} "#false" / "#f" } -> parse_false
 
-    Character           <- { {} "#" backslash
-                         ( "x" {:hex_character: hex_scalar_value :}
-                         / {:character_name: character_name :}
-                         / {:character: . :}) } -> parse_character
-    character_name      <- "alarm" / "backspace" / "delete" / "escape" / "newline"
-                         / "null" / "return" / "space" / "tab"
-    hex_scalar_value    <- xdigit+
-
-    String              <- { {} quote {:string: string_element* :} quote } -> parse_string
-    string_element      <- [^"\\]
-                         / mnemonic_escape
-                         / backslash quote
-                         / backslash backslash
-                         / backslash intraline_whitespace* line_ending
-                           intraline_whitespace*
-                         / inline_hex_escape
-
-    Bytevector          <- { {} "#u8" open
-                             {| {:bytes: byte (intraline_whitespace+ byte)* :} |}
-                           close } -> parse_bytevector
-    byte                <- "2" "5" [0-5]
-                         / "2" [0-4] [0-9]
-                         / "1" [0-9]^2
-                         / [0-9]^-2
-
     -- Rules for the R7RS numeric tower
     Number              <- bnum / onum / num / xnum
     bnum                <- { {}
@@ -178,6 +153,32 @@ local function grammar(parse)
     odigit              <- [0-7]
     digit               <- %digit
     xdigit              <- %xdigit
+
+    -- Other self-evaluating forms
+    Character           <- { {} "#" backslash
+                         ( "x" {:hex_character: hex_scalar_value :}
+                         / {:character_name: character_name :}
+                         / {:character: . :}) } -> parse_character
+    character_name      <- "alarm" / "backspace" / "delete" / "escape" / "newline"
+                         / "null" / "return" / "space" / "tab"
+    hex_scalar_value    <- xdigit+
+
+    String              <- { {} quote {:string: string_element* :} quote } -> parse_string
+    string_element      <- [^"\\]
+                         / mnemonic_escape
+                         / backslash quote
+                         / backslash backslash
+                         / backslash intraline_whitespace* line_ending
+                           intraline_whitespace*
+                         / inline_hex_escape
+
+    Bytevector          <- { {} "#u8" open
+                             {| {:bytes: byte (intraline_whitespace+ byte)* :} |}
+                           close } -> parse_bytevector
+    byte                <- "2" "5" [0-5]
+                         / "2" [0-4] [0-9]
+                         / "1" [0-9]^2
+                         / [0-9]^-2
 
     -- Parsing constructs
     Symbol              <- { %alpha %alnum* } -> parse_symbol
