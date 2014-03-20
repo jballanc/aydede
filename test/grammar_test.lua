@@ -51,6 +51,10 @@ function TestGrammar:test_booleans()
   assert_parse("false", "#f")
 end
 
+function TestGrammar:test_vector()
+  assert_parse("vector", "#(#\\a 2.3 #t \"hello\" #u8(2 4 6))")
+end
+
 function TestGrammar:test_character()
   assert_parse("character", "#\\a")
   assert_parse("character", "#\\newline")

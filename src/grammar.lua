@@ -47,6 +47,7 @@ local function grammar(parse)
 
     SelfEvaluating      <- Boolean
                          / Number
+                         / Vector
                          / Character
                          / String
                          / Bytevector
@@ -155,6 +156,12 @@ local function grammar(parse)
     xdigit              <- %xdigit
 
     -- Other self-evaluating forms
+    Vector              <- { {} "#("
+                             {| {:data: datum (intraline_whitespace+ datum)* :} |}
+                           ")" } -> parse_vector
+    datum               <- simple_datum
+    simple_datum        <- Boolean / Number / Character / String / Symbol / Bytevector
+
     Character           <- { {} "#" backslash
                          ( "x" {:hex_character: hex_scalar_value :}
                          / {:character_name: character_name :}
