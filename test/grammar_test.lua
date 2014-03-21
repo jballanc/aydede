@@ -52,7 +52,21 @@ function TestGrammar:test_booleans()
 end
 
 function TestGrammar:test_vector()
-  assert_parse("vector", "#(#\\a 2.3 #t \"hello\" #u8(2 4 6))")
+  local function parse_rule(str)
+    return function(s)
+      assert_is(s, str)
+    end
+  end
+  local rules = {}
+  rules.parse_character = parse_rule("#\\a")
+  rules.parse_num = parse_rule("2.3")
+  rules.parse_true = parse_rule("#t")
+  rules.parse_string = parse_rule("\"hello\"")
+  rules.parse_bytevector = parse_rule("#u8(2 4 6)")
+  rules.parse_vector = parse_rule("#(#\\a 2.3 #t \"hello\" #u8(2 4 6))")
+  local p = mock(rules)
+  local g = grammar(p)
+  assert_true(g:match("#(#\\a 2.3 #t \"hello\" #u8(2 4 6))"))
 end
 
 function TestGrammar:test_character()
