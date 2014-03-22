@@ -102,6 +102,7 @@ local function grammar(parse)
     ocomplex            <- oreal
     complex             <- real
     xcomplex            <- xreal
+    -- The remaining rules cover all forms of real numbers in bases 2, 8, 10, and 16.
     breal               <- {| {:sign: sign :} bureal |} / infnan
     oreal               <- {| {:sign: sign :} oureal |} / infnan
     real                <- {| {:sign: sign :} ureal |} / infnan
@@ -155,22 +156,21 @@ local function grammar(parse)
     digit               <- %digit
     xdigit              <- %xdigit
 
-    -- Other self-evaluating forms
     Vector              <- { {} "#("
-                             {| {:data: datum (intraline_whitespace+ datum)* :} |}
+                             {| datum (intraline_whitespace+ datum)* |}
                            ")" } -> parse_vector
     datum               <- simple_datum
     simple_datum        <- Boolean / Number / Character / String / Symbol / Bytevector
 
-    Character           <- { {} "#" backslash
+    Character           <- { {} {| "#" backslash
                          ( "x" {:hex_character: hex_scalar_value :}
-                         / {:character_name: character_name :}
-                         / {:character: . :}) } -> parse_character
+                         / {:named_character: character_name :}
+                         / {:character: . :}) |} } -> parse_character
     character_name      <- "alarm" / "backspace" / "delete" / "escape" / "newline"
                          / "null" / "return" / "space" / "tab"
     hex_scalar_value    <- xdigit+
 
-    String              <- { {} quote {:string: string_element* :} quote } -> parse_string
+    String              <- { {} quote { string_element* } quote } -> parse_string
     string_element      <- [^"\\]
                          / mnemonic_escape
                          / backslash quote
@@ -180,12 +180,12 @@ local function grammar(parse)
                          / inline_hex_escape
 
     Bytevector          <- { {} "#u8" open
-                             {| {:bytes: byte (intraline_whitespace+ byte)* :} |}
+                             {| byte (intraline_whitespace+ byte)* |}
                            close } -> parse_bytevector
-    byte                <- "2" "5" [0-5]
+    byte                <- { "2" "5" [0-5]
                          / "2" [0-4] [0-9]
                          / "1" [0-9]^2
-                         / [0-9]^-2
+                         / [0-9]^-2 }
 
     -- Parsing constructs
     Symbol              <- { %alpha %alnum* } -> parse_symbol
