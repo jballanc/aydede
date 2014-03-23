@@ -69,6 +69,10 @@ function TestGrammar:test_vector()
   assert_true(g:match("#(#\\a 2.3 #t \"hello\" #u8(2 4 6))"))
 end
 
+function TestGrammar:test_other_datum_vectors()
+  assert_parse("vector", "#(#1#)")
+end
+
 function TestGrammar:test_character()
   assert_parse("character", "#\\a")
   assert_parse("character", "#\\newline")

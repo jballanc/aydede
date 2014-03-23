@@ -159,8 +159,9 @@ local function grammar(parse)
     Vector              <- { {} "#("
                              {| datum (intraline_whitespace+ datum)* |}
                            ")" } -> parse_vector
-    datum               <- simple_datum
+    datum               <- simple_datum / label "#"
     simple_datum        <- Boolean / Number / Character / String / Symbol / Bytevector
+    label               <- "#" uint
 
     Character           <- { {} {| "#" backslash
                          ( "x" {:hex_character: hex_scalar_value :}
