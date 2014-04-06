@@ -28,13 +28,15 @@ local function mock(mock_funs)
   return setmetatable(mock_funs, { __index = failed_call })
 end
 
-local function assert_parse(rule, str)
-  local rule_tbl = {}
-  local function parse(s)
+local function parse_rule(str)
+  return function(s)
     assert_is(s, str)
   end
+end
 
-  rule_tbl["parse_"..rule:lower()] = parse
+local function assert_parse(rule, str)
+  local rule_tbl = {}
+  rule_tbl["parse_"..rule:lower()] = parse_rule(str)
 
   p = mock(rule_tbl)
   local g = grammar(p)
@@ -52,11 +54,6 @@ function TestGrammar:test_booleans()
 end
 
 function TestGrammar:test_vector()
-  local function parse_rule(str)
-    return function(s)
-      assert_is(s, str)
-    end
-  end
   local rules = {}
   rules.parse_character = parse_rule("#\\a")
   rules.parse_num = parse_rule("2.3")
@@ -70,7 +67,12 @@ function TestGrammar:test_vector()
 end
 
 function TestGrammar:test_other_datum_vectors()
-  assert_parse("vector", "#(#1#)")
+  local rules = {}
+  rules.parse_vector = parse_rule("#(#1#)")
+  rules.parse_label = parse_rule("#1")
+  local p = mock(rules)
+  local g = grammar(p)
+  assert_true(g:match("#(#1#)"))
 end
 
 function TestGrammar:test_character()
