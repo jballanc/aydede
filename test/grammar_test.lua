@@ -75,6 +75,19 @@ function TestGrammar:test_other_datum_vectors()
   assert_true(g:match("#(#1#)"))
 end
 
+function TestGrammar:test_abbreviations()
+  local rules = {}
+  rules.parse_string = parse_rule("\"test\"")
+  rules.parse_abbreviation = parse_rule("'#(\"test\")")
+  function rules.parse_vector(str)
+    assert(str == "#(\"test\")" or str == "#('#(\"test\"))",
+           "can't parse vector: "..str)
+  end
+  local p = mock(rules)
+  local g = grammar(p)
+  assert_true(g:match("#('#(\"test\"))"))
+end
+
 function TestGrammar:test_character()
   assert_parse("character", "#\\a")
   assert_parse("character", "#\\newline")

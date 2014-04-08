@@ -160,10 +160,15 @@ local function grammar(parse)
                              {| Datum (intraline_whitespace+ Datum)* |}
                            ")" } -> parse_vector
     Datum               <- { {} simple_datum
+                         / compound_datum
                          / {| {:label: label :} "=" {:datum: Datum :} |}
                          / {| {:label: label "#" :} |} }
     simple_datum        <- Boolean / Number / Character / String / Symbol / Bytevector
+    compound_datum      <- List / Vector / Abbreviation
     label               <- { {} "#" uint } -> parse_label
+
+    Abbreviation        <- { {} {| abbrev_prefix Datum |} } -> parse_abbreviation
+    abbrev_prefix       <- {:prefix: "'" / "`" / "," / ",@" :}
 
     Character           <- { {} {| "#" backslash
                          ( "x" {:hex_character: hex_scalar_value :}
