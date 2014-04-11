@@ -46,6 +46,13 @@ end
 
 TestGrammar = {}
 
+function TestGrammar:test_quotation()
+  local rules = {}
+  rules.parse_num = parse_rule("3")
+  rules.parse_quotation = parse_rule("'3")
+  assert_true(grammar(mock(rules)):match("'3"))
+end
+
 function TestGrammar:test_booleans()
   assert_parse("true", "#true")
   assert_parse("true", "#t")

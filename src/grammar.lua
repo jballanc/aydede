@@ -43,8 +43,12 @@ local function grammar(parse)
     Expression          <- Literal
                          / Symbol   -- Synonymous with "Identifier"
 
-    Literal             <- SelfEvaluating
+    Literal             <- Quotation
+                         / SelfEvaluating
 
+    Quotation           <- { {} "'" Datum
+                         / "(quote" intraline_whitespace+ Datum
+                                    intraline_whitespace* ")" } -> parse_quotation
     SelfEvaluating      <- Boolean
                          / Number
                          / Vector
