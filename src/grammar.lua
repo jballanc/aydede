@@ -40,15 +40,22 @@ local function grammar(parse)
     -- "Expression" encompases most valid forms, including everything that counts as a
     -- "Datum" for processing by the REPL. More elements will be added to this list as
     -- more of the grammar is defined.
-    Expression          <- Literal
+    Expression          <- ProcedureCall
+                         / Literal
                          / Symbol   -- Synonymous with "Identifier"
+
+    ProcedureCall       <- { {} open {:op: operator :}
+                             {:args: intraline_whitespace+ operand :}*
+                             close } -> parse_call
+    operator            <- Expression
+    operand             <- Expression
 
     Literal             <- Quotation
                          / SelfEvaluating
 
     Quotation           <- { {} "'" Datum
-                         / "(quote" intraline_whitespace+ Datum
-                                    intraline_whitespace* ")" } -> parse_quotation
+                         / open "quote" intraline_whitespace+ Datum close
+                         } -> parse_quotation
     SelfEvaluating      <- Boolean
                          / Number
                          / Vector
@@ -58,8 +65,8 @@ local function grammar(parse)
 
     -- Some useful tokens
     explicit_sign       <- [+-]
-    open                <- [(]
-    close               <- [)]
+    open                <- intraline_whitespace* [(] intraline_whitespace*
+    close               <- intraline_whitespace* [)] intraline_whitespace*
     slash               <- [/]
     backslash           <- [\\]
     quote               <- ["]

@@ -46,6 +46,10 @@ end
 
 TestGrammar = {}
 
+function TestGrammar:test_procedure_call()
+  assert_parse("call", "(add 1 1)")
+end
+
 function TestGrammar:test_quotation()
   local rules = {}
   rules.parse_num = parse_rule("3")
