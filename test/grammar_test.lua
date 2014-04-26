@@ -46,6 +46,10 @@ end
 
 TestGrammar = {}
 
+function TestGrammar:test_lambda()
+  assert_parse("lambda", "(lambda () (1 2))")
+end
+
 function TestGrammar:test_procedure_call()
   assert_parse("call", "(add 1 1)")
 end

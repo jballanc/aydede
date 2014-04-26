@@ -40,13 +40,27 @@ local function grammar(parse)
     -- "Expression" encompases most valid forms, including everything that counts as a
     -- "Datum" for processing by the REPL. More elements will be added to this list as
     -- more of the grammar is defined.
-    Expression          <- ProcedureCall
+    Expression          <- LambdaExpression
+                         / ProcedureCall
                          / Literal
                          / Symbol   -- Synonymous with "Identifier"
 
-    ProcedureCall       <- { {} open {:op: operator :}
-                             {:args: intraline_whitespace+ operand :}*
-                             close } -> parse_call
+    LambdaExpression    <- { {}
+                             {| open "lambda"
+                                {:params: formals :}
+                                {:body: body :} |}
+                           } -> parse_lambda
+    formals             <- open Symbol* close
+                         / Symbol
+                         / open Symbol+ dot Symbol close
+    body                <- List -- Just a placeholder for the moment
+
+    ProcedureCall       <- { {}
+                             {| open
+                                {:op: operator :}
+                                {:args: {| (intraline_whitespace+ { operand })* |} :}
+                                close |}
+                           } -> parse_call
     operator            <- Expression
     operand             <- Expression
 
