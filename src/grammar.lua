@@ -48,12 +48,13 @@ local function grammar(parse)
     LambdaExpression    <- { {}
                              {| open "lambda"
                                 {:params: formals :}
-                                {:body: body :} |}
+                                {:body: body :}
+                                close |}
                            } -> parse_lambda
     formals             <- open Symbol* close
                          / Symbol
                          / open Symbol+ dot Symbol close
-    body                <- List -- Just a placeholder for the moment
+    body                <- Expression
 
     ProcedureCall       <- { {}
                              {| open
