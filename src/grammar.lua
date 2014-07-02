@@ -32,9 +32,11 @@ local function grammar(parse)
 
     -- TODO: need to add the "...OrDefinition" part. For now just proxying through to
     -- forms we want to test...
-    CommandOrDefinition <- Command
-                         --Definition
-                         --"(begin" CommandOrDefinition+ ")"
+    CommandOrDefinition <- Definition
+                         / Command
+                         / open "begin"
+                           (intraline_whitespace+ CommandOrDefinition)+
+                           close
     Command             <- Expression
 
     -- "Expression" encompases most valid forms, including everything that counts as a
@@ -221,8 +223,18 @@ local function grammar(parse)
                          / "1" [0-9]^2
                          / [0-9]^-2 }
 
+    -- Definition
+    Definition          <- { {}
+                             open "define"
+                             intraline_whitespace+ Identifier
+                             intraline_whitespace+ Expression
+                             intraline_whitespace+ close
+                            } -> parse_definition
+
+
     -- Parsing constructs
-    Symbol              <- { %alpha %alnum* } -> parse_symbol
+    Identifier          <- { %alpha %alnum* } -> parse_symbol
+    Symbol              <- Identifier
 
     -- Simple forms
     Car                 <- Symbol

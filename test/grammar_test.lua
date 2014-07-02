@@ -205,5 +205,14 @@ function TestGrammar:test_sci_notation()
   assert_parse_rule("num", "6.0223E23")
 end
 
+function TestGrammar:test_simple_definition()
+  assert_parse_rules({
+    "definition",
+    symbol = "foo",
+    num = 42
+  },
+  "(define foo 42)")
+end
+
 LuaUnit:setOutputType("TAP")
 LuaUnit:run()
