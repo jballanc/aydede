@@ -209,7 +209,7 @@ function TestGrammar:test_simple_definition()
   assert_parse_rules({
     "definition",
     symbol = "foo",
-    num = 42
+    num = "42"
   },
   "(define foo 42)")
 end

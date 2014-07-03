@@ -225,10 +225,11 @@ local function grammar(parse)
 
     -- Definition
     Definition          <- { {}
-                             open "define"
+                             open
+                             "define"
                              intraline_whitespace+ Identifier
                              intraline_whitespace+ Expression
-                             intraline_whitespace+ close
+                             close
                             } -> parse_definition
 
 
