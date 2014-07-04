@@ -34,7 +34,14 @@ end
 -- Simple HOF for use with mocks to generate parse tests
 local function parse_rule(str)
   return function(s)
-    assert_is(s, str)
+    if type(str) == "table" then
+      if str[s] then
+        assert_true(str[s] and str[s] > 0)
+        str[s] = str[s] - 1
+      end
+    else
+      assert_is(s, str)
+    end
   end
 end
 
@@ -212,6 +219,16 @@ function TestGrammar:test_simple_definition()
     num = "42"
   },
   "(define foo 42)")
+end
+
+function TestGrammar:test_simple_func_definition()
+  assert_parse_rules({
+    "definition",
+    symbol = {foo = 1, bar = 1, add = 1},
+    num = "1",
+    call = "(add 1 1)"
+  },
+  "(define (foo bar) (add 1 1))")
 end
 
 LuaUnit:setOutputType("TAP")
