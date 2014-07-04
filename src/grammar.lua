@@ -224,13 +224,20 @@ local function grammar(parse)
                          / [0-9]^-2 }
 
     -- Definition
-    Definition          <- { {}
-                             open
-                             "define"
-                             intraline_whitespace+ Identifier
-                             intraline_whitespace+ Expression
-                             close
-                            } -> parse_definition
+    Definition          <- { {} {|
+                             (open "define" intraline_whitespace+
+                             {:name: Identifier :} intraline_whitespace+
+                             {:value: Expression :}
+                             close)
+                           / (open "define" open
+                             {:name: Identifier :} intraline_whitespace+
+                             {:formals: def_formals :} close
+                             {:body: body :} close)
+                            |} } -> parse_definition
+    def_formals         <- { {} {|
+                             { Identifier }*
+                           / { Identifier }* "." {:rest_arg: Identifier :}
+                           |} }
 
 
     -- Parsing constructs
