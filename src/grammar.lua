@@ -45,7 +45,7 @@ local function grammar(parse)
     Expression          <- LambdaExpression
                          / ProcedureCall
                          / Literal
-                         / Symbol   -- Synonymous with "Identifier"
+                         / Identifier
 
     LambdaExpression    <- { {}
                              {| open "lambda"
@@ -223,17 +223,19 @@ local function grammar(parse)
                          / "1" [0-9]^2
                          / [0-9]^-2 }
 
-    -- Definition
+    -- Definitions
     Definition          <- { {} {|
-                             (open "define" intraline_whitespace+
+                             open "define" intraline_whitespace+
                              {:name: Identifier :} intraline_whitespace+
                              {:value: Expression :}
-                             close)
-                           / (open "define" open
+                             close |}
+                           } -> parse_simple_definition
+                           / { {} {|
+                             open "define" open
                              {:name: Identifier :} intraline_whitespace+
                              {:formals: def_formals :} close
-                             {:body: body :} close)
-                            |} } -> parse_definition
+                             {:body: body :} close |}
+                           } -> parse_function_definition
     def_formals         <- { {} {|
                              { Identifier }*
                            / { Identifier }* "." {:rest_arg: Identifier :}
@@ -243,6 +245,7 @@ local function grammar(parse)
     -- Parsing constructs
     Identifier          <- { %alpha %alnum* } -> parse_symbol
     Symbol              <- Identifier
+    Keyword             <- Identifier
 
     -- Simple forms
     Car                 <- Symbol

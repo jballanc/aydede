@@ -214,16 +214,16 @@ end
 
 function TestGrammar:test_simple_definition()
   assert_parse_rules({
-    "definition",
+    "simple_definition",
     symbol = "foo",
     num = "42"
   },
   "(define foo 42)")
 end
 
-function TestGrammar:test_simple_func_definition()
+function TestGrammar:test_function_definition()
   assert_parse_rules({
-    "definition",
+    "function_definition",
     symbol = {foo = 1, bar = 1, add = 1},
     num = "1",
     call = "(add 1 1)"
