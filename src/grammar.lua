@@ -30,8 +30,6 @@ local function grammar(parse)
     Program             <- --ImportDecl
                            CommandOrDefinition
 
-    -- TODO: need to add the "...OrDefinition" part. For now just proxying through to
-    -- forms we want to test...
     CommandOrDefinition <- Definition
                          / Command
                          / open "begin"
@@ -236,10 +234,22 @@ local function grammar(parse)
                              {:formals: def_formals :} close
                              {:body: body :} close |}
                            } -> parse_function_definition
+                           / { {} {|
+                             open "define-syntax" intraline_whitespace+
+                             {:name: Keyword :} intraline_whitespace+
+                             {:transform: transformer_spec :} close |}
+                           } -> parse_syntax_definition
     def_formals         <- { {} {|
                              { Identifier }*
                            / { Identifier }* "." {:rest_arg: Identifier :}
                            |} }
+    transformer_spec    <- { {} {|
+                             (open "syntax-rules"
+                             open {:identifier: Identifier :} close
+                             syntax_rule* close)
+                           |} }
+    syntax_rule         <- { {} {|
+                             pattern intraline_whitespace+ template |} }
 
 
     -- Parsing constructs
