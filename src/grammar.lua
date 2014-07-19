@@ -109,26 +109,21 @@ local function grammar(parse)
                          / { {} "#false" / "#f" } -> parse_false
 
     -- Rules for the R7RS numeric tower
+    -- NOTE: For a true full numeric tower, we would have to implement all the variations
+    -- on complex number forms. For now, we only consider simple real numbers.
     Number              <- bnum / onum / num / xnum
     bnum                <- { {}
-                             {| {:prefix: bprefix :} {:num: bcomplex :} |}
+                             {| {:prefix: bprefix :} {:num: breal :} |}
                            } -> parse_bnum
     onum                <- { {}
-                             {| {:prefix: oprefix :} {:num: ocomplex :} |}
+                             {| {:prefix: oprefix :} {:num: oreal :} |}
                            } -> parse_onum
     num                 <- { {}
-                             {| {:prefix: prefix :} {:num: complex :} |}
+                             {| {:prefix: prefix :} {:num: real :} |}
                            } -> parse_num
     xnum                <- { {}
-                             {| {:prefix: xprefix :} {:num: xcomplex :} |}
+                             {| {:prefix: xprefix :} {:num: xreal :} |}
                            } -> parse_xnum
-    -- For a true full numeric tower, we would have to implement all the variations on
-    -- complex number forms. For now, we only consider simple real numbers.
-    bcomplex            <- breal
-    ocomplex            <- oreal
-    complex             <- real
-    xcomplex            <- xreal
-    -- The remaining rules cover all forms of real numbers in bases 2, 8, 10, and 16.
     breal               <- {| {:sign: sign :} bureal |} / infnan
     oreal               <- {| {:sign: sign :} oureal |} / infnan
     real                <- {| {:sign: sign :} ureal |} / infnan
