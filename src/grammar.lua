@@ -243,8 +243,18 @@ local function grammar(parse)
                              open {:identifier: Identifier :} close
                              syntax_rule* close)
                            |} }
-    syntax_rule         <- { {} {|
-                             pattern intraline_whitespace+ template |} }
+    syntax_rule         <- { {} {| open {:pattern: pattern :}
+                                   intraline_whitespace+
+                                   {:template: template :}
+                                   close |}
+                           } -> parse_syntax_rule
+    pattern             <- pattern_datum
+    pattern_datum       <- String
+                         / Character
+                         / Boolean
+                         / Number
+    template            <- template_datum
+    template_datum      <- pattern_datum
 
 
     -- Parsing constructs

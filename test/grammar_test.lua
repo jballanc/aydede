@@ -231,5 +231,15 @@ function TestGrammar:test_function_definition()
   "(define (foo bar) (add 1 1))")
 end
 
+function TestGrammar:test_simple_syntax_definition()
+  assert_parse_rules({
+    "syntax_definition",
+    symbol = {foo = 1, bar = 1},
+    string = {test = 1, tset = 1},
+    syntax_rule = "(\"test\" \"tset\")"
+  },
+  "(define-syntax foo (syntax-rules (bar) (\"test\" \"tset\")))")
+end
+
 LuaUnit:setOutputType("TAP")
 LuaUnit:run()
