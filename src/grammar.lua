@@ -248,10 +248,7 @@ local function grammar(parse)
                                    {:template: template :}
                                    close |}
                            } -> parse_syntax_rule
-    pattern             <- pattern_identifier
-                         / pattern_datum
-    pattern_identifier  <- [^elipsis] Identifier
-    elipsis             <- "..."
+    pattern             <- pattern_datum
     pattern_datum       <- String
                          / Character
                          / Boolean

@@ -241,17 +241,5 @@ function TestGrammar:test_simple_syntax_definition()
   "(define-syntax foo (syntax-rules (bar) (\"test\" \"tset\")))")
 end
 
-function TestGrammar:test_no_elipsis_for_pattern_identifier()
-  symbols = {foo = 1, bar = 1}
-  symbols["..."] = 1
-  assert_parse_rules({
-    "syntax_definition",
-    symbol = symbols,
-    string = "test",
-    syntax_rule = "(\"test\")"
-  },
-  "(define-syntax foo (syntax-rules (bar) (... \"test\"))")
-end
-
 LuaUnit:setOutputType("TAP")
 LuaUnit:run()
