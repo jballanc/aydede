@@ -1,32 +1,39 @@
 # Aydede
 
-This is a simplistic implementation of the R7RS small Scheme language on top of LuaJIT
-using LPeg to generate the grammar. The general approach follows the concept of the
-metacircular interpreter as presented in the "Structure and Interpretation of Computer
-Programs".
+**Aydede** is an implementation of the R7RS small Scheme language on top of the
+LuaJIT runtime. It makes use of LPeg for specifying the grammar and follows the
+general design of the metacircular interpreter described in "Structure and
+Interpretation of Computer Programs".
+
+What makes **Aydede** unique is how it handles interpretation. The interpreter
+is parameterized at runtime based on the command-line arguments provided. This
+means that, for example, passing the `--ast` argument will tell **Aydede** to
+use the AST-Printing interpreter that only dumps the AST to STDOUT and then
+quits.
 
 
 ## Building
 
-Both LuaJIT and LPeg have been vendored in with the project. LuaJIT is vendored as a git
-submodule, so before building you will need to check out the correct version of LuaJIT by
-running `git submodule update --init`. Also, the Makefile assumes that you have Clang
-installed to compile the C code. If not, you may need to edit the `CC` line in the
-Makefile.
+Both LuaJIT and LPeg have been vendored in with the project. LuaJIT is vendored
+as a git submodule, so before building you will need to check out the correct
+version of LuaJIT by running `git submodule update --init`. Also, the Makefile
+assumes that you have Clang installed to compile the C code. If not, you may
+need to edit the `CC` line in the Makefile.
 
 From there, building should be as simple as running `make`.
 
 
 # Copyright
 
-Aydede Copyright (c) 2014, Joshua Ballanco.
+Aydede Copyright (c) 2014-2016, Joshua Ballanco.
 
 Licensed under the BSD 2-Clause License. See COPYING for full license details.
 
 ---
 
-The following 3rd party Open Source projects have been used in part or in full. License
-details for each can be found in the appropriate text file in the `licenses` directory.
+The following 3rd party Open Source projects have been used in part or in full.
+License details for each can be found in the appropriate text file in the
+`licenses` directory.
 
 * LuaJIT Copyright (C) 2005-2013 Mike Pall. All rights reserved.
 
