@@ -27,8 +27,8 @@ else
   LJ_OPTS = -lm -ldl -lc
 endif
 
-slashtodots = $(addprefix build/,\
-	      $(addsuffix $1,\
+slashtodots = $(addprefix build/, \
+	      $(addsuffix $1, \
 	      $(subst /,.,$(patsubst src/%.lua,%,$2))))
 rwildcard = $(wildcard $1$2) \
 	    $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
@@ -46,7 +46,7 @@ bin/ay: $(MAIN) $(LPEG) $(LUA_OBJS) $(LJ_A) | bin
 	$(CC) $(CFLAGS) $(LDFLAGS) $(MAIN) $(BUILD_OBJS) $(LJ_A) $(LJ_OPTS) -o $@
 
 build/luadeps.mk: | build
-	$(foreach f,$(LUA_SRC),\
+	$(foreach f,$(LUA_SRC), \
 	  $(shell echo \
 	  "$(call slashtodots,.lua,$(f)): $(f)\n\tcp $$< \$$@" >> build/luadeps.mk))
 
@@ -80,7 +80,7 @@ build bin:
 test: $(LJBIN) $(LPEG)
 	@ $(foreach t,$(TESTS),\
 	  LUA_PATH=";;./src/?.lua;./test/?.lua;./vendor/luaunit/?.lua;./vendor/LPeg/?.lua" \
-	  LUA_CPATH=";;./build/?.so"\
+	  LUA_CPATH=";;./build/?.so" \
 	  $(LJBIN) $(t))
 
 # Scheme language specs are taken from Chibi Scheme
