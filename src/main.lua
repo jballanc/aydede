@@ -14,10 +14,10 @@
 
 --]]
 
+local reader = require("reader")
+local grammar = require("grammar")
 
 function main(opts)
-  local reader = require("reader")
-  local grammar = require("grammar")
   local parser = require("parser")
   local evaluator
   local program

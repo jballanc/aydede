@@ -13,12 +13,26 @@
 
 --]]
 
-
+local tu = require("util/table")
 local lp = require("lpeg")
-local re = require("re")
 local P, R, S, V, C, Cg, Ct, locale
       = lp.P, lp.R, lp.S, lp.V, lp.C, lp.Cg, lp.Ct, lp.locale
 
+local grammar = {
+  "Program",
+  Program = V("CommandOrDefinition")
+}
+
+local tokens = require("grammar/tokens")
+local cod = require("grammar/command_or_definition")
+
+tu.merge(grammar, tokens)
+tu.merge(grammar, cod)
+
+return grammar
+
+--[=[
+local re = require("re")
 local function grammar(parse)
   -- Use locale for matching; generates rules: alnum, alpha, cntrl, digit, graph, lower,
   -- print, punct, space, upper, and xdigit
@@ -275,3 +289,4 @@ local function grammar(parse)
 end
 
 return grammar
+--]=]
