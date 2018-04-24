@@ -1,5 +1,7 @@
 # Aydede
 
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
+
 **Aydede** is an implementation of the R7RS small Scheme language on top of the
 LuaJIT runtime. It makes use of LPeg for specifying the grammar and follows the
 general design of the metacircular interpreter described in "Structure and
